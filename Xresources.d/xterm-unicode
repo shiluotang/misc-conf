@@ -1,0 +1,33 @@
+UXTerm*loginShell: true
+UXTerm*font: -*-courier-medium-r-normal-*-12-100-*-*-*-*-iso8859-*
+UXTerm*boldFont: terminus-12
+UXTerm*vt100*geometry: 80x24
+UXTerm*saveLines: 2000
+UXTerm*charClass: 33:48,35:48,37:48,43:48,45-47:48,64:48,95:48,126:48
+UXTerm*termName: UXTerm-color
+UXTerm*eightBitInput: false
+UXTerm.vt100.faceName: Courier:size=10:antialise=true
+UXTerm.vt100.faceNameDoublesize: WenQuanYi Bitmap Song
+
+!UXTerm.vt100.reverseVideo: true
+!UXTerm*foreground: rgb:a8/a8/a8
+!UXTerm*background: rgb:00/00/00
+!UXTerm*color0: rgb:00/00/00
+!UXTerm*color1: rgb:a8/00/00
+!UXTerm*color2: rgb:00/a8/00
+!UXTerm*color3: rgb:a8/54/00
+!UXTerm*color4: rgb:00/00/a8
+!UXTerm*color5: rgb:a8/00/a8
+!UXTerm*color6: rgb:00/a8/a8
+!UXTerm*color7: rgb:a8/a8/a8
+!UXTerm*color8: rgb:54/54/54
+!UXTerm*color9: rgb:fc/54/54
+!UXTerm*color10: rgb:54/fc/54
+!UXTerm*color11: rgb:fc/fc/54
+!UXTerm*color12: rgb:54/54/fc
+!UXTerm*color13: rgb:fc/54/fc
+!UXTerm*color14: rgb:54/fc/fc
+!UXTerm*color15: rgb:fc/fc/fc
+!UXTerm*boldMode: false
+!UXTerm*colorBDMode: true
+!UXTerm*colorBD: rgb:fc/fc/fc
