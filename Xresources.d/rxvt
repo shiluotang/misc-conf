@@ -1,0 +1,42 @@
+Rxvt.loginShell: true
+Rxvt.geometry: 80x24
+Rxvt.saveLines: 10000
+Rxvt.cutchars: "`\"'&()*,:;<=>?[\\]^{|}$"
+Rxvt.scrollBar: false
+Rxvt.visualBell: true
+Rxvt.fading: 15
+
+Rxvt.colorIT:      #87af5f
+Rxvt.colorBD:      #d7d7d7
+Rxvt.colorUL:      #87afd7
+
+! font configuration
+Rxvt.italicFont: courier-12
+Rxvt.font: xft:courier:size=10:antialise=true
+Rxvt.letterSpace: -2
+
+Rxvt.menu:/etc/X11/rxvt.menu
+Rxvt.preeditType:Root
+Rxvt.transparency:255
+
+!Rxvt.foreground: rgb:a8/a8/a8
+!Rxvt.background: rgb:00/00/00
+!Rxvt.color0: rgb:00/00/00
+!Rxvt.color1: rgb:a8/00/00
+!Rxvt.color2: rgb:00/a8/00
+!Rxvt.color3: rgb:a8/54/00
+!Rxvt.color4: rgb:00/00/a8
+!Rxvt.color5: rgb:a8/00/a8
+!Rxvt.color6: rgb:00/a8/a8
+!Rxvt.color7: rgb:a8/a8/a8
+!Rxvt.color8: rgb:54/54/54
+!Rxvt.color9: rgb:fc/54/54
+!Rxvt.color10: rgb:54/fc/54
+!Rxvt.color11: rgb:fc/fc/54
+!Rxvt.color12: rgb:54/54/fc
+!Rxvt.color13: rgb:fc/54/fc
+!Rxvt.color14: rgb:54/fc/fc
+!Rxvt.color15: rgb:fc/fc/fc
+!Rxvt.colorBD: rgb:fc/fc/fc
+!Rxvt.font: -*-courier-medium-r-normal-*-12-100-*-*-*-*-iso8859-*
+
