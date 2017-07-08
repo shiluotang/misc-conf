@@ -36,7 +36,7 @@ augroup Binary
     au BufWritePost *.class if &bin | %!xxd
     au BufWritePost *.class set nomod | endif
 
-	au!
+    au!
     au BufReadPre   *.exe let &bin=1
     au BufReadPost  *.exe if &bin | %!xxd
     au BufReadPost  *.exe set ft=xxd | endif
@@ -45,7 +45,7 @@ augroup Binary
     au BufWritePost *.exe if &bin | %!xxd
     au BufWritePost *.exe set nomod | endif
 
-	au!
+    au!
     au BufReadPre   *.o let &bin=1
     au BufReadPost  *.o if &bin | %!xxd
     au BufReadPost  *.o set ft=xxd | endif
@@ -54,7 +54,7 @@ augroup Binary
     au BufWritePost *.o if &bin | %!xxd
     au BufWritePost *.o set nomod | endif
 
-	au!
+    au!
     au BufReadPre   *.lib let &bin=1
     au BufReadPost  *.lib if &bin | %!xxd
     au BufReadPost  *.lib set ft=xxd | endif
@@ -63,7 +63,7 @@ augroup Binary
     au BufWritePost *.lib if &bin | %!xxd
     au BufWritePost *.lib set nomod | endif
 
-	au!
+    au!
     au BufReadPre   *.dll let &bin=1
     au BufReadPost  *.dll if &bin | %!xxd
     au BufReadPost  *.dll set ft=xxd | endif
