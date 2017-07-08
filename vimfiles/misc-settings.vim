@@ -12,7 +12,7 @@ endif
 
 if has("autocmd")
     " Java textwidth
-	autocmd filetype java setlocal textwidth=80 formatoptions+=tm
+    autocmd filetype java setlocal textwidth=80 formatoptions+=tm
     filetype plugin indent on
 endif
 
