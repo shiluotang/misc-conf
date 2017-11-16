@@ -15,8 +15,9 @@ if filereadable(expand('<sfile>:p:h') . '/plugin/clang_complete.vim')
         let g:clang_versions = [ '4.0', '3.9', '3.8', '3.7', '3.6', '3.5', '3.4' ]
         if !has("win32")
             for g:clang_version in g:clang_versions
-                let g:clang_library_path = '/usr/lib/llvm-' . g:clang_version . 'lib/libclang.so'
+                let g:clang_library_path = '/usr/lib/llvm-' . g:clang_version . '/lib/libclang.so'
                 if filereadable(g:clang_library_path)
+                    let g:clang_library_path = '/usr/lib/llvm-' . g:clang_version . '/lib'
                     let g:clang_use_library = 1
                     break
                 else
