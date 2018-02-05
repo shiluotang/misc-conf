@@ -11,14 +11,19 @@ if version >= 800
 endif
 
 if has("autocmd")
-    " Java textwidth
-    autocmd filetype java setlocal textwidth=80 formatoptions+=tm
     filetype plugin indent on
+    autocmd filetype java   setlocal textwidth=80 formatoptions+=tm
+    autocmd filetype c      setlocal syntax=c.doxygen
+    autocmd filetype cpp    setlocal syntax=cpp.doxygen
+    autocmd filetype php    setlocal syntax=php.doxygen
+    autocmd filetype idl    setlocal syntax=idl.doxygen
 endif
 
 " doxygen syntax
-let g:load_doxygen_syntax = 1
-" Java syntax
+" This will conflict with javadoc rendering in vim.
+"let g:load_doxygen_syntax = 1
+
+"java syntax
 let java_allow_cpp_keywords = 0
 let java_highlight_java_lang_ids = 1
 let java_highlight_java_io = 1
@@ -26,5 +31,8 @@ let java_highlight_java_io = 1
 
 "taglist plugin
 let Tlist_Show_One_File = 1
-" molokai scheme
+
+"colorscheme molokai fix
 let g:molokai_original = 1
+
+compiler!gcc
