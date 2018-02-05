@@ -27,9 +27,11 @@ runtime tabspace-settings.vim
 runtime airline-settings.vim
 runtime fileencodings-settings.vim
 runtime clangcomplete-settings.vim
+runtime clangformat-settings.vim
 "runtime javacomplete-settings.vim
 "runtime eclim-settings.vim
 runtime cscope-settings.vim
 runtime keymappings-settings.vim
+runtime nerdtree-settings.vim
 runtime binary-settings.vim
 runtime misc-settings.vim

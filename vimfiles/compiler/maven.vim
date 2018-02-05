@@ -18,8 +18,10 @@ endif
 CompilerSet errorformat=
             \[%tRROR]\ %#Malformed\ POM\ %f:\ %m@%l:%c%.%#,
             \[%tRROR]\ %#Non-parseable\ POM\ %f:\ %m\ %#\\@\ line\ %l\\,\ column\ %c%.%#,
+            \[%t%[A-Z]%#]\ %f:[%l]\ %m,
             \[%[A-Z]%#]\ %f:[%l\\,%c]\ %t%[a-z]%#:\ %m,
             \[%t%[A-Z]%#]\ %f:[%l\\,%c]\ %[%^:]%#:\ %m,
+            \[%t%[A-Z]%#]\ %f:[%l\\,%c]\ %m,
             \%A[%[A-Z]%#]\ Exit\ code:\ %[0-9]%#\ -\ %f:%l:\ %m,
             \%A[%[A-Z]%#]\ %f:%l:\ %m,
             \%-Z[%[A-Z]%#]\ %p^,

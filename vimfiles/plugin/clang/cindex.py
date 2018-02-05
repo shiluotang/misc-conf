@@ -63,6 +63,7 @@ call is efficient.
 # o implement additional SourceLocation, SourceRange, and File methods.
 
 from ctypes import *
+from ctypes.util import find_library
 import collections
 
 import clang.enumerations
@@ -2015,7 +2016,7 @@ class TranslationUnit(ClangObject):
                                     len(args), unsaved_array,
                                     len(unsaved_files), options)
 
-        if ptr is None:
+        if not ptr:
             raise TranslationUnitLoadError("Error parsing translation unit.")
 
         return cls(ptr, index=index)
@@ -2037,7 +2038,7 @@ class TranslationUnit(ClangObject):
             index = Index.create()
 
         ptr = conf.lib.clang_createTranslationUnit(index, filename)
-        if ptr is None:
+        if not ptr:
             raise TranslationUnitLoadError(filename)
 
         return cls(ptr=ptr, index=index)
@@ -3147,7 +3148,7 @@ class Config:
         elif name == 'Windows':
             file = 'libclang.dll'
         else:
-            file = 'libclang.so'
+            file = find_library("clang") or 'libclang.so'
 
         if Config.library_path:
             file = Config.library_path + '/' + file
