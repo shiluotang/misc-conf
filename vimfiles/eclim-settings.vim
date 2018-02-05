@@ -9,7 +9,8 @@ if filereadable(expand('<sfile>:p:h') . '/plugin/eclim.vim')
         autocmd filetype java map <buffer> <LocalLeader>eF :%JavaFormat<CR>
         autocmd filetype java map <buffer> <LocalLeader>ei :JavaImport<CR>
         autocmd filetype java map <buffer> <LocalLeader>eI :JavaImportOrganize<CR>
-        autocmd filetype java map <buffer> <LocalLeader>ed :JavaDocSearch <CR>
+        autocmd filetype java map <buffer> <LocalLeader>ed :JavaDocPreview<CR>
+        autocmd filetype java map <buffer> <LocalLeader>eD :JavaDocSearch<CR>
         autocmd filetype java map <buffer> <LocalLeader>eh :JavaHierarchy<CR>
         autocmd filetype java map <buffer> <LocalLeader>ec :JavaCallHierarchy<CR>
         autocmd filetype java map <buffer> <LocalLeader>eC :JavaCallHierarchy!<CR>
