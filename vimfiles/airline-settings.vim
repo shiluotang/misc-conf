@@ -15,8 +15,14 @@ if filereadable(expand('<sfile>:p:h') . '/plugin/airline.vim')
                 let g:airline_powerline_fonts = 1
             else
                 let g:airline_powerline_fonts = 0
-                "set guifont=Courier:h12
-                "set guifontwide=楷体:h12
+                if has('win32')
+                    set guifont=Courier:h12:cANSI
+                elseif has('mac')
+                    set guifont=Courier:h12,Monaco:h12
+                    "set guifontwide=楷体:h12
+                elseif has('unix')
+                    set guifont=Courier\ 10,Courier\ 10\ Pitch\ 10
+                endif
                 let g:airline_left_sep=''
                 let g:airline_right_sep=''
             endif
