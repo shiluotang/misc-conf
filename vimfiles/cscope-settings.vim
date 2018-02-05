@@ -11,13 +11,11 @@ if has('cscope')
         let &csprg=g:cscope
         set csto=0
         set cst
-        set nocsverb
         if filereadable('cscope.out')
             cs add cscope.out
-        elseif $CSCOPE_DB != ''
-            cs add $CSCOPE_DB
+        elseif exists('$CSCOPE_DB') && filereadable(expand('$CSCOPE_DB'))
+            cs add expand('$CSCOPE_DB')
         endif
-        set csverb
         nmap <Leader>ss :cs find s <C-R>=expand("<cword>")<CR><CR>
         nmap <Leader>sg :cs find g <C-R>=expand("<cword>")<CR><CR>
         nmap <Leader>sc :cs find c <C-R>=expand("<cword>")<CR><CR>
@@ -26,7 +24,12 @@ if has('cscope')
         nmap <Leader>sf :cs find f <C-R>=expand("<cfile>")<CR><CR>
         nmap <Leader>si :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
         nmap <Leader>sd :cs find d <C-R>=expand("<cword>")<CR><CR>
-        nmap <Leader>sa :cs find a <C-R>=expand("<cword>")<CR><CR>
-        set cscopequickfix=s-,c-,d-,i-,t-,e-,a-
+        if has('quickfix')
+            set cscopequickfix=s-,c-,d-,i-,t-,e-
+            if version >= 800
+                nmap <Leader>sa :cs find a <C-R>=expand("<cword>")<CR><CR>
+                set cscopequickfix+=a-
+            endif
+        endif
     endif
 endif
