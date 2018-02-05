@@ -6,7 +6,7 @@ if has("gui_running")
         behave mswin
         set guifont=Courier_New:h10:cANSI
     elseif has("unix")
-        if !filereadable(expand("$HOME/.vim/plugin/airline.vim"))
+        if !filereadable(expand('<sfile>:p:h') . '/plugin/airline.vim')
             set guifont=Courier\ 10
         endif
     endif
