@@ -30,9 +30,25 @@ CompilerSet errorformat=
 " default make
 CompilerSet makeprg=mvn
 
+function JUnitOne()
+    let s:needle = 'src.test.java.'
+    let s:casename = expand('<cword>')
+    let s:abspath = expand('%:p:r')
+    let s:abspath = substitute(substitute(s:abspath, '/', '.', 'g'), '\', '.', 'g')
+    let s:pos = strridx(s:abspath, s:needle)
+    if s:pos != -1
+        let s:clazz = strpart(s:abspath, s:pos + strlen(s:needle))
+        "echo 'make test -DfailIfNoTests=false -Dtest=' . s:clazz . '#' . s:casename
+        let s:code = 'make test -DfailIfNoTests=false -Dtest=' . s:clazz . '\#' . s:casename
+        execute s:code
+    endif
+endfunction
+
 map <F5> :make compile test-compile<CR>
 imap <F5> <ESC>:make compile test-compile<CR>
 map <C-F5> :make clean compile test-compile<CR>
 imap <C-F5> <ESC>:make clean compile test-compile<CR>
 map <C-F11> :make -q exec:java<CR>
 imap <C-F11> :make -q exec:java<CR>
+map <F9> :call JUnitOne()<CR>
+imap <F9> :call JUnitOne()<CR>
