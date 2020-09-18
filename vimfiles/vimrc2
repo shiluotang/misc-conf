@@ -1,0 +1,156 @@
+source $VIMRUNTIME/vimrc_example.vim
+if has('gui_running')
+    source $VIMRUNTIME/gvimrc_example.vim
+    if has('gui_macvim')
+        set guifont=CourierPrimeForPowerline:h12
+        "set guifont=CousineForPowerline:h12
+    elseif has('win32')
+        set guifont=Courier_New:h12
+    else
+        if has('gui_gtk2') || has('gui_gtk3')
+            "set guifont=Courier\ 10\ Pitch\ 12
+            set guifont=Courier\ Prime\ for\ Powerline\ 12
+        endif
+    endif
+    set go-=a
+    set go-=e
+    set go-=g
+    " preserve icon 
+    "set go-=i
+    set go-=m
+    set go-=r
+    set go-=L
+    set go-=t
+    set go-=T
+endif
+
+if empty(glob(expand('$HOME/.vim/autoload/plug.vim')))
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+call plug#begin(expand('$HOME/.vim/plugged'))
+if has('cscope') && executable('cscope')
+    Plug 'vim-scripts/cscope.vim'
+endif
+Plug 'vim-scripts/vcscommand.vim'
+Plug 'vim-scripts/Colour-Sampler-Pack'
+Plug 'vim-scripts/maven3.1.1-errorformat'
+Plug 'vim-latex/vim-latex'
+Plug 'preservim/nerdtree'
+if version >= 800
+    Plug 'Xuyuanp/nerdtree-git-plugin'
+endif
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'junegunn/seoul256.vim'
+Plug 'morhetz/gruvbox'
+Plug 'cocopon/iceberg.vim'
+Plug 'altercation/vim-colors-solarized'
+Plug 'chrisbra/matchit'
+Plug 'xavierd/clang_complete'
+Plug 'JamshedVesuna/vim-markdown-preview'
+Plug 'iamcco/mathjax-support-for-mkdp'
+Plug 'iamcco/markdown-preview.vim'
+"Plug 'ryanoasis/vim-devicons'
+call plug#end()
+
+function! PlugLoaded(name)
+    return (
+        \ has_key(g:plugs, a:name) &&
+        \ isdirectory(substitute(g:plugs[a:name].dir, "\/$", "", "")) &&
+        \ stridx(&rtp, substitute(g:plugs[a:name].dir, "\/$", "", "")) >= 0)
+endfunction
+
+if PlugLoaded('nerdtree')
+    if has("win32") || has("win64")
+        let NERDTreeDirArrows=0
+    endif
+    map <C-n> :NERDTreeToggle<CR>
+endif
+
+if PlugLoaded('vim-airline')
+  "let g:airline#extensions#branch#enable = 1
+  let g:airline_extensions = ['branch', 'tabline']
+  if PlugLoaded('vcscommand.vim')
+      let g:airline#extensions#branch#use_vcscommand = 1
+  endif
+  if has('gui_running')
+      if &guifont =~ 'Powerline'
+          let g:airline_powerline_fonts = 1
+      else
+          let g:airline_symbols_ascii = 1
+      endif
+  endif
+endif
+
+if PlugLoaded('cscope.vim')
+    "Below is the minimum key mappings.
+    nnoremap <leader>fa :call cscope#findInteractive(expand('<cword>'))<CR>
+    nnoremap <leader>lo :call ToggleLocationList()<CR>
+    "Some optional key mappings to search directly.
+    " s: Find this C symbol
+    nnoremap  <leader>fs :call cscope#find('s', expand('<cword>'))<CR>
+    " g: Find this definition
+    nnoremap  <leader>fg :call cscope#find('g', expand('<cword>'))<CR>
+    " d: Find functions called by this function
+    nnoremap  <leader>fd :call cscope#find('d', expand('<cword>'))<CR>
+    " c: Find functions calling this function
+    nnoremap  <leader>fc :call cscope#find('c', expand('<cword>'))<CR>
+    " t: Find this text string
+    nnoremap  <leader>ft :call cscope#find('t', expand('<cword>'))<CR>
+    " e: Find this egrep pattern
+    nnoremap  <leader>fe :call cscope#find('e', expand('<cword>'))<CR>
+    " f: Find this file
+    nnoremap  <leader>ff :call cscope#find('f', expand('<cword>'))<CR>
+    " i: Find files #including this file
+    nnoremap  <leader>fi :call cscope#find('i', expand('<cword>'))<CR>
+endif
+
+if PlugLoaded('vcscommand.vim')
+    nmap <Leader>cjr :execute "VCSReview "      . expand("<cword>") . ""<CR>
+    nmap <Leader>cjd :execute "VCSDiff "        . expand("<cword>") . ""<CR>
+    nmap <Leader>cjv :execute "VCSVimDiff "     . expand("<cword>") . ""<CR>
+    nmap <Leader>cjn :execute "VCSAnnotate "    . expand("<cword>") . ""<CR>
+    nmap <Leader>cjN :execute "VCSAnnotate! "   . expand("<cword>") . ""<CR>
+endif
+
+if PlugLoaded('clang_complete')
+    let g:clang_complete_macros=1
+endif
+
+if PlugLoaded('seoul256.vim')
+    colorscheme seoul256
+endif
+
+if has('multi_byte')
+    set fileencodings=ucs-bom,utf-8
+    set fileencodings+=chinese,japanese,korean
+    set fileencodings+=default,latin1
+endif
+
+if has('autocmd')
+    autocmd filetype c      setlocal textwidth=80 syntax=c.doxygen
+    autocmd filetype cpp    setlocal textwidth=80 syntax=cpp.doxygen
+    autocmd filetype php    setlocal syntax=php.doxygen
+    autocmd filetype idl    setlocal syntax=idl.doxygen
+    autocmd filetype python let python_highlight_all = 1
+	autocmd BufReadCmd *.nar call zip#Browse(expand("<amatch>"))
+    if filereadable(expand('$VIMRUNTIME/ftplugin/man.vim'))
+        runtime ftplugin/man.vim
+        autocmd filetype c,cpp,java setlocal keywordprg=:Man\ 3 
+    endif
+endif
+
+if version >= 700
+    set colorcolumn=+1
+endif
+if version >= 800
+    set scrolloff=0
+endif
+
+set tabstop=4
+set shiftwidth=4
+set expandtab
+set number
