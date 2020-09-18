@@ -2,8 +2,9 @@ source $VIMRUNTIME/vimrc_example.vim
 if has('gui_running')
     source $VIMRUNTIME/gvimrc_example.vim
     if has('gui_macvim')
-        set guifont=CourierPrimeForPowerline:h12
         "set guifont=CousineForPowerline:h12
+        "set guifont=CourierPrimeForPowerline:h13
+        set guifont=CourierForPowerline:h12
     elseif has('win32')
         set guifont=Courier_New:h12
     else
@@ -15,7 +16,7 @@ if has('gui_running')
     set go-=a
     set go-=e
     set go-=g
-    " preserve icon 
+    " preserve icon
     "set go-=i
     set go-=m
     set go-=r
@@ -72,7 +73,7 @@ endif
 
 if PlugLoaded('vim-airline')
   "let g:airline#extensions#branch#enable = 1
-  let g:airline_extensions = ['branch', 'tabline']
+  let g:airline_extensions = ['branch', 'tabline', 'whitespace']
   if PlugLoaded('vcscommand.vim')
       let g:airline#extensions#branch#use_vcscommand = 1
   endif
@@ -118,6 +119,20 @@ endif
 
 if PlugLoaded('clang_complete')
     let g:clang_complete_macros=1
+    if has('macunix')
+        let s:candidates = [
+                    \ '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib',
+                    \ '/Library/Developer/CommandLineTools/usr/lib'
+                    \ ]
+        for s:candidate in s:candidates
+            let s:candidate = s:candidate . '/libclang.dylib'
+            if executable(s:candidate)
+                let g:clang_library_path = s:candidate
+                let g:clang_use_library = 1
+                break
+            endif
+        endfor
+    endif
 endif
 
 if PlugLoaded('seoul256.vim')
@@ -136,10 +151,10 @@ if has('autocmd')
     autocmd filetype php    setlocal syntax=php.doxygen
     autocmd filetype idl    setlocal syntax=idl.doxygen
     autocmd filetype python let python_highlight_all = 1
-	autocmd BufReadCmd *.nar call zip#Browse(expand("<amatch>"))
+    autocmd BufReadCmd *.nar call zip#Browse(expand("<amatch>"))
     if filereadable(expand('$VIMRUNTIME/ftplugin/man.vim'))
         runtime ftplugin/man.vim
-        autocmd filetype c,cpp,java setlocal keywordprg=:Man\ 3 
+        autocmd filetype c,cpp,java setlocal keywordprg=:Man\ 3
     endif
 endif
 
