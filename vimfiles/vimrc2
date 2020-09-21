@@ -4,13 +4,17 @@ if has('gui_running')
     if has('gui_macvim')
         "set guifont=CousineForPowerline:h12
         "set guifont=CourierPrimeForPowerline:h13
-        set guifont=CourierForPowerline:h12
+        "set guifont=CourierForPowerline:h12
+        set guifont=DroidSansMonoNerdFontCompleteM-:h12
     elseif has('win32')
         set guifont=Courier_New:h12
     else
         if has('gui_gtk2') || has('gui_gtk3')
             "set guifont=Courier\ 10\ Pitch\ 12
-            set guifont=Courier\ Prime\ for\ Powerline\ 12
+            "set guifont=Courier\ Prime\ for\ Powerline\ 12
+            "set guifont=Courier\ for\ Powerline\ 12
+            "set guifont=DroidSansMono\ Nerd\ Font\ Mono\ 12
+            set guifont=Cousine\ Nerd\ Font\ Mono\ 12
         endif
     endif
     set go-=a
@@ -39,9 +43,17 @@ Plug 'vim-scripts/vcscommand.vim'
 Plug 'vim-scripts/Colour-Sampler-Pack'
 Plug 'vim-scripts/maven3.1.1-errorformat'
 Plug 'vim-latex/vim-latex'
-Plug 'preservim/nerdtree'
 if version >= 800
+    Plug 'preservim/nerdtree'
     Plug 'Xuyuanp/nerdtree-git-plugin'
+else
+    "Plug 'preservim/nerdtree', {'tag': '6.0.0'} "splitMode undefined
+    Plug 'preservim/nerdtree', {'tag': '5.3.3'}
+    "Plug 'preservim/nerdtree', {'tag': '5.1.0'}
+    Plug 'Xuyuanp/nerdtree-git-plugin', {'commit': 'f52c6b3ad7afe49a7f5231bd72c2e3f84c0a9706'}
+    "Plug 'Xuyuanp/nerdtree-git-plugin', {'commit': 'e0d6bbc50007ff99ce94fc1f7a20ddc1c6fda702'}
+    "Plug 'Xuyuanp/nerdtree-git-plugin', {'commit': '4d21fe51146a9c0a44320b22cdde68ffaa8d6dc8'}
+    "Plug 'Xuyuanp/nerdtree-git-plugin', {'commit': '926ba6dddbf144e47c53001414bb3490230f707f'}
 endif
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -54,7 +66,12 @@ Plug 'xavierd/clang_complete'
 Plug 'JamshedVesuna/vim-markdown-preview'
 Plug 'iamcco/mathjax-support-for-mkdp'
 Plug 'iamcco/markdown-preview.vim'
-"Plug 'ryanoasis/vim-devicons'
+if has('gui_running')
+    if &guifont =~ 'NerdFont'
+                \ || &guifont =~ 'Nerd Font'
+        Plug 'ryanoasis/vim-devicons'
+    endif
+endif
 call plug#end()
 
 function! PlugLoaded(name)
@@ -72,13 +89,14 @@ if PlugLoaded('nerdtree')
 endif
 
 if PlugLoaded('vim-airline')
-  "let g:airline#extensions#branch#enable = 1
   let g:airline_extensions = ['branch', 'tabline', 'whitespace']
   if PlugLoaded('vcscommand.vim')
       let g:airline#extensions#branch#use_vcscommand = 1
   endif
   if has('gui_running')
       if &guifont =~ 'Powerline'
+                  \ || &guifont =~ 'NerdFont'
+                  \ || &guifont =~ 'Nerd Font'
           let g:airline_powerline_fonts = 1
       else
           let g:airline_symbols_ascii = 1
@@ -137,6 +155,10 @@ endif
 
 if PlugLoaded('seoul256.vim')
     colorscheme seoul256
+endif
+
+if PlugLoaded('vim-devicons')
+  let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
 endif
 
 if has('multi_byte')
