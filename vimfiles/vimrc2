@@ -1,21 +1,22 @@
 source $VIMRUNTIME/vimrc_example.vim
 if has('gui_running')
     source $VIMRUNTIME/gvimrc_example.vim
-    if has('gui_macvim')
+    if has('gui_gtk2') || has('gui_gtk3')
+        "set guifont=Courier\ 10\ Pitch\ 12
+        "set guifont=Courier\ 10\ Pitch\ for\ Powerline\ 12
+        "set guifont=Courier\ Prime\ for\ Powerline\ 12
+        "set guifont=Courier\ for\ Powerline\ 12
+        set guifont=DroidSansMono\ Nerd\ Font\ Mono\ 12
+        "set guifont=Cousine\ Nerd\ Font\ Mono\ 12
+    elseif has('x11')
+        set guifont=*-lucidatypewriter-medium-r-normal-*-*-180-*-*-m-*-*
+    elseif has('gui_win32')
+        set guifont=Courier_New:h12
+    elseif has('gui_macvim') || has('gui_mac')
         "set guifont=CousineForPowerline:h12
         "set guifont=CourierPrimeForPowerline:h12
-        set guifont=CourierForPowerline:h20
-        "set guifont=DroidSansMonoNerdFontCompleteM-:h20
-    elseif has('win32')
-        set guifont=Courier_New:h12
-    else
-        if has('gui_gtk2') || has('gui_gtk3')
-            set guifont=Courier\ 10\ Pitch\ 12
-            "set guifont=Courier\ Prime\ for\ Powerline\ 12
-            "set guifont=Courier\ for\ Powerline\ 12
-            "set guifont=DroidSansMono\ Nerd\ Font\ Mono\ 12
-            "set guifont=Cousine\ Nerd\ Font\ Mono\ 12
-        endif
+        "set guifont=CourierForPowerline:h20
+        set guifont=DroidSansMonoNerdFontCompleteM-:h20
     endif
     set go-=a
     set go-=e
@@ -71,9 +72,8 @@ Plug 'xavierd/clang_complete'
 Plug 'iamcco/mathjax-support-for-mkdp'
 Plug 'iamcco/markdown-preview.vim'
 if has('gui_running')
-    if has('gui_macvim') && &guifont =~ 'NerdFont'
-                \ || has('gui_gtk2')
-                \ || has('gui_gtk3')
+    if &guifont =~ 'Nerd Font'
+                \ || &guifont =~ 'NerdFont'
         Plug 'ryanoasis/vim-devicons'
     endif
 endif
