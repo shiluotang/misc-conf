@@ -3,18 +3,18 @@ if has('gui_running')
     source $VIMRUNTIME/gvimrc_example.vim
     if has('gui_macvim')
         "set guifont=CousineForPowerline:h12
-        "set guifont=CourierPrimeForPowerline:h13
-        "set guifont=CourierForPowerline:h12
-        set guifont=DroidSansMonoNerdFontCompleteM-:h12
+        "set guifont=CourierPrimeForPowerline:h12
+        set guifont=CourierForPowerline:h20
+        "set guifont=DroidSansMonoNerdFontCompleteM-:h20
     elseif has('win32')
         set guifont=Courier_New:h12
     else
         if has('gui_gtk2') || has('gui_gtk3')
-            "set guifont=Courier\ 10\ Pitch\ 12
+            set guifont=Courier\ 10\ Pitch\ 12
             "set guifont=Courier\ Prime\ for\ Powerline\ 12
             "set guifont=Courier\ for\ Powerline\ 12
             "set guifont=DroidSansMono\ Nerd\ Font\ Mono\ 12
-            set guifont=Cousine\ Nerd\ Font\ Mono\ 12
+            "set guifont=Cousine\ Nerd\ Font\ Mono\ 12
         endif
     endif
     set go-=a
@@ -46,6 +46,11 @@ Plug 'vim-latex/vim-latex'
 if version >= 800
     Plug 'preservim/nerdtree'
     Plug 'Xuyuanp/nerdtree-git-plugin'
+    "Plug 'lambdalisue/nerdfont.vim'
+    "Plug 'lambdalisue/glyph-palette.vim'
+    "Plug 'lambdalisue/fern.vim'
+    "Plug 'lambdalisue/fern-renderer-nerdfont.vim'
+    "Plug 'lambdalisue/fern-git-status.vim'
 else
     "Plug 'preservim/nerdtree', {'tag': '6.0.0'} "splitMode undefined
     Plug 'preservim/nerdtree', {'tag': '5.3.3'}
@@ -63,12 +68,12 @@ Plug 'cocopon/iceberg.vim'
 Plug 'altercation/vim-colors-solarized'
 Plug 'chrisbra/matchit'
 Plug 'xavierd/clang_complete'
-Plug 'JamshedVesuna/vim-markdown-preview'
 Plug 'iamcco/mathjax-support-for-mkdp'
 Plug 'iamcco/markdown-preview.vim'
 if has('gui_running')
-    if &guifont =~ 'NerdFont'
-                \ || &guifont =~ 'Nerd Font'
+    if has('gui_macvim') && &guifont =~ 'NerdFont'
+                \ || has('gui_gtk2')
+                \ || has('gui_gtk3')
         Plug 'ryanoasis/vim-devicons'
     endif
 endif
@@ -158,7 +163,9 @@ if PlugLoaded('seoul256.vim')
 endif
 
 if PlugLoaded('vim-devicons')
+  let g:WebDevIconsNerdTreeBeforeGlyphPadding = ' '
   let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
+  let g:webdevicons_conceal_nerdtree_brackets = 1
 endif
 
 if has('multi_byte')
@@ -174,6 +181,7 @@ if has('autocmd')
     autocmd filetype idl    setlocal syntax=idl.doxygen
     autocmd filetype python let python_highlight_all = 1
     autocmd BufReadCmd *.nar call zip#Browse(expand("<amatch>"))
+    autocmd BufReadCmd *.jar.original call zip#Browse(expand("<amatch>"))
     if filereadable(expand('$VIMRUNTIME/ftplugin/man.vim'))
         runtime ftplugin/man.vim
         autocmd filetype c,cpp,java setlocal keywordprg=:Man\ 3
