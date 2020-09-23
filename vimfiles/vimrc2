@@ -82,6 +82,7 @@ Plug 'xavierd/clang_complete'
 Plug 'iamcco/mathjax-support-for-mkdp'
 Plug 'iamcco/markdown-preview.vim'
 Plug 'shiluotang/vim-maven-plugin'
+Plug 'tpope/vim-fugitive'
 if has('gui_running')
     if &guifont =~ 'Nerd Font'
                 \ || &guifont =~ 'NerdFont'
@@ -199,7 +200,7 @@ if has('autocmd')
     endif
 endif
 
-if version >= 700
+if version >= 703
     set colorcolumn=+1
 endif
 if version >= 800
