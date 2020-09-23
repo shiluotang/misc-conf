@@ -1,7 +1,7 @@
 source $VIMRUNTIME/vimrc_example.vim
 if has('gui_running')
     source $VIMRUNTIME/gvimrc_example.vim
-    if has('gui_gtk2') || has('gui_gtk3')
+    if has('gui_gtk')
         "set guifont=Courier\ 10\ Pitch\ 12
         "set guifont=Courier\ 10\ Pitch\ for\ Powerline\ 12
         "set guifont=Courier\ Prime\ for\ Powerline\ 12
@@ -15,25 +15,35 @@ if has('gui_running')
     elseif has('gui_macvim') || has('gui_mac')
         "set guifont=CousineForPowerline:h12
         "set guifont=CourierPrimeForPowerline:h12
-        "set guifont=CourierForPowerline:h20
-        set guifont=DroidSansMonoNerdFontCompleteM-:h20
+        set guifont=CourierForPowerline:h20
+        "set guifont=DroidSansMonoNerdFontCompleteM-:h20
     endif
-    set go-=a
-    set go-=e
-    set go-=g
+    set guioptions-=a
+    set guioptions-=e
+    set guioptions-=g
     " preserve icon
-    "set go-=i
-    set go-=m
-    set go-=r
-    set go-=L
-    set go-=t
-    set go-=T
+    "set guioptions-=i
+    set guioptions-=m
+    set guioptions-=r
+    set guioptions-=L
+    set guioptions-=t
+    set guioptions-=T
 endif
 
 if empty(glob(expand('$HOME/.vim/autoload/plug.vim')))
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    if executable('curl')
+        silent !curl -fLo ~/.vim/autoload/plug.vim
+                    \ --create-dirs
+                    \ 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    elseif executable('wget')
+        :!mkdir -p ~/.vim/autoload
+        silent !wget -O ~/.vim/autoload/plug.vim
+                    \ --no-check-certificate
+                    \ 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    else
+    endif
 endif
 
 call plug#begin(expand('$HOME/.vim/plugged'))
