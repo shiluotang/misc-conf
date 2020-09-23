@@ -37,11 +37,12 @@ if empty(glob(expand('$HOME/.vim/autoload/plug.vim')))
                     \ 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
         autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
     elseif executable('wget')
-        :!mkdir -p ~/.vim/autoload
-        silent !wget -O ~/.vim/autoload/plug.vim
-                    \ --no-check-certificate
-                    \ 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+        if exists('*mkdir') && mkdir(expand('$HOME/.vim/autoload'), "p")
+            silent !wget -O ~/.vim/autoload/plug.vim
+                        \ --no-check-certificate
+                        \ 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+            autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+        endif
     else
     endif
 endif
@@ -52,7 +53,6 @@ if has('cscope') && executable('cscope')
 endif
 Plug 'vim-scripts/vcscommand.vim'
 Plug 'vim-scripts/Colour-Sampler-Pack'
-Plug 'vim-scripts/maven3.1.1-errorformat'
 Plug 'vim-latex/vim-latex'
 if version >= 800
     Plug 'preservim/nerdtree'
@@ -81,6 +81,7 @@ Plug 'chrisbra/matchit'
 Plug 'xavierd/clang_complete'
 Plug 'iamcco/mathjax-support-for-mkdp'
 Plug 'iamcco/markdown-preview.vim'
+Plug 'shiluotang/vim-maven-plugin'
 if has('gui_running')
     if &guifont =~ 'Nerd Font'
                 \ || &guifont =~ 'NerdFont'
