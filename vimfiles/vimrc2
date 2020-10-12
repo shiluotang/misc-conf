@@ -57,22 +57,17 @@ Plug 'vim-latex/vim-latex'
 if version >= 800
     Plug 'preservim/nerdtree'
     Plug 'Xuyuanp/nerdtree-git-plugin'
-    "Plug 'lambdalisue/nerdfont.vim'
-    "Plug 'lambdalisue/glyph-palette.vim'
-    "Plug 'lambdalisue/fern.vim'
-    "Plug 'lambdalisue/fern-renderer-nerdfont.vim'
-    "Plug 'lambdalisue/fern-git-status.vim'
+    Plug 'tpope/vim-fugitive'
 else
-    "Plug 'preservim/nerdtree', {'tag': '6.0.0'} "splitMode undefined
     Plug 'preservim/nerdtree', {'tag': '5.3.3'}
-    "Plug 'preservim/nerdtree', {'tag': '5.1.0'}
     Plug 'Xuyuanp/nerdtree-git-plugin', {'commit': 'f52c6b3ad7afe49a7f5231bd72c2e3f84c0a9706'}
-    "Plug 'Xuyuanp/nerdtree-git-plugin', {'commit': 'e0d6bbc50007ff99ce94fc1f7a20ddc1c6fda702'}
-    "Plug 'Xuyuanp/nerdtree-git-plugin', {'commit': '4d21fe51146a9c0a44320b22cdde68ffaa8d6dc8'}
-    "Plug 'Xuyuanp/nerdtree-git-plugin', {'commit': '926ba6dddbf144e47c53001414bb3490230f707f'}
+    Plug 'tpope/vim-fugitive', {'tag': 'v3.1'}
 endif
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+if has('nvim') || has('patch-8.0.902')
+    Plug 'mhinz/vim-signify'
+else
+    Plug 'mhinz/vim-signify', {'tag': 'legacy'}
+endif
 Plug 'junegunn/seoul256.vim'
 Plug 'morhetz/gruvbox'
 Plug 'cocopon/iceberg.vim'
@@ -82,8 +77,8 @@ Plug 'xavierd/clang_complete'
 Plug 'iamcco/mathjax-support-for-mkdp'
 Plug 'iamcco/markdown-preview.vim'
 Plug 'shiluotang/vim-maven-plugin'
-Plug 'tpope/vim-fugitive'
-Plug 'artur-shaik/vim-javacomplete2'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 if has('gui_running')
     if &guifont =~ 'Nerd Font'
                 \ || &guifont =~ 'NerdFont'
@@ -104,22 +99,29 @@ if PlugLoaded('nerdtree')
         let NERDTreeDirArrows=0
     endif
     map <C-n> :NERDTreeToggle<CR>
+else
+    let g:netrw_liststyle = 3
+    let g:netrw_banner = 0
+    let g:netrw_browse_split = 1
 endif
 
 if PlugLoaded('vim-airline')
-  let g:airline_extensions = ['branch', 'tabline', 'whitespace']
-  if PlugLoaded('vcscommand.vim')
-      let g:airline#extensions#branch#use_vcscommand = 1
-  endif
-  if has('gui_running')
-      if &guifont =~ 'Powerline'
-                  \ || &guifont =~ 'NerdFont'
-                  \ || &guifont =~ 'Nerd Font'
-          let g:airline_powerline_fonts = 1
-      else
-          let g:airline_symbols_ascii = 1
-      endif
-  endif
+    let g:airline#extensions#tabline#enabled = 1
+    "let g:airline#extensions#whitespace#enabled = 1
+    "if PlugLoaded('vcscommand.vim')
+    "    if !PlugLoaded('vim-fugitive')
+    "        "let g:airline#extensions#branch#use_vcscommand = 1
+    "    endif
+    "endif
+    if has('gui_running')
+        if &guifont =~ 'Powerline'
+                    \ || &guifont =~ 'NerdFont'
+                    \ || &guifont =~ 'Nerd Font'
+            let g:airline_powerline_fonts = 1
+        else
+            let g:airline_symbols_ascii = 1
+        endif
+    endif
 endif
 
 if PlugLoaded('cscope.vim')
@@ -190,6 +192,7 @@ endif
 if PlugLoaded('vim-devicons')
   let g:WebDevIconsNerdTreeBeforeGlyphPadding = ' '
   let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
+  let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
   let g:webdevicons_conceal_nerdtree_brackets = 1
 endif
 
