@@ -1,5 +1,5 @@
 if has('win32')
-    if expand('$lang') =~ 'UTF-8'
+    if expand('$lang') =~ '.*UTF-8'
     else
         let $LANG=expand('$lang') . '.UTF-8'
         set encoding=utf-8
@@ -80,10 +80,13 @@ endif
 Plug 'junegunn/seoul256.vim'
 Plug 'morhetz/gruvbox'
 Plug 'cocopon/iceberg.vim'
+Plug 'NLKNguyen/papercolor-theme'
 Plug 'altercation/vim-colors-solarized'
 Plug 'chrisbra/matchit'
 Plug 'xavierd/clang_complete'
-Plug 'Chiel92/vim-autoformat'
+if version > 703
+    Plug 'Chiel92/vim-autoformat'
+endif
 "Plug 'adizero/vim-clang-format'
 Plug 'iamcco/mathjax-support-for-mkdp'
 Plug 'iamcco/markdown-preview.vim'
@@ -112,7 +115,9 @@ endfunction
 
 if PlugLoaded('nerdtree')
     if has("win32") || has("win64")
-        let NERDTreeDirArrows=0
+        if &encoding != 'utf-8'
+            let NERDTreeDirArrows=0
+        endif
     endif
     map <C-n> :NERDTreeToggle<CR>
 else
@@ -128,6 +133,9 @@ else
 endif
 
 if PlugLoaded('vim-airline')
+    if version <= 703
+        let g:airline#extensions#branch#enabled = 0
+    endif
     let g:airline#extensions#tabline#enabled = 1
     "let g:airline#extensions#whitespace#enabled = 1
     "if PlugLoaded('vcscommand.vim')
@@ -148,6 +156,7 @@ if PlugLoaded('vim-airline')
 endif
 
 if PlugLoaded('cscope.vim')
+    let g:cscope_slient = 1
     "Below is the minimum key mappings.
     nnoremap <leader>fa :call cscope#findInteractive(expand('<cword>'))<CR>
     nnoremap <leader>lo :call ToggleLocationList()<CR>
@@ -193,6 +202,12 @@ if PlugLoaded('clang_complete')
                 break
             endif
         endfor
+    elseif has('win32')
+        let s:candidate = expand('$PROGRAMFILES/LLVM/bin/libclang.dll')
+        if executable(s:candidate)
+            let g:clang_library_path = s:candidate
+            let g:clang_use_library = 1
+        endif
     endif
 endif
 
@@ -208,13 +223,13 @@ if PlugLoaded('vim-javacomplete2')
     endif
 endif
 
-if PlugLoaded('seoul256.vim')
+if PlugLoaded('papercolor-theme')
     if has('win32')
         if has('gui_running')
-            colorscheme seoul256
+            colorscheme PaperColor
         endif
     else
-        colorscheme seoul256
+        colorscheme PaperColor
     endif
 endif
 
