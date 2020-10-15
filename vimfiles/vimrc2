@@ -23,9 +23,10 @@ if has('gui_running')
         set guifont=Cousine_NF:h10:cANSI
     elseif has('gui_macvim') || has('gui_mac')
         "set guifont=CousineForPowerline:h12
-        set guifont=CourierPrimeForPowerline:h20
+        "set guifont=CourierPrimeForPowerline:h20
         set guifont=CourierForPowerline:h20
-        "set guifont=DroidSansMonoNerdFontCompleteM-:h12
+        "set guifont=DroidSansMonoNerdFontCompleteM-:h20
+        "set guifont=FuraCodeNerdFontCompleteM-Light:h20
     endif
     set guioptions-=a
     set guioptions-=e
@@ -77,21 +78,64 @@ if has('nvim') || has('patch-8.0.902')
 else
     Plug 'mhinz/vim-signify', {'tag': 'legacy'}
 endif
+"""""""""""""""""""""""""""""
+
+"""""""""""""""""""""""""""""
+"colorschemes
+"""""""""""""""""""""""""""""
+Plug 'vim-scripts/Colour-Sampler-Pack'
 Plug 'junegunn/seoul256.vim'
 Plug 'morhetz/gruvbox'
 Plug 'cocopon/iceberg.vim'
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'altercation/vim-colors-solarized'
-Plug 'chrisbra/matchit'
+Plug 'chriskempson/base16-vim'
+Plug 'equt/paper.vim'
+Plug 'jacoborus/tender.vim'
+Plug 'dracula/vim', {'as': 'dracula.vim'}
+Plug 'ayu-theme/ayu-vim'
+Plug 'arcticicestudio/nord-vim'
+Plug 'rakr/vim-one'
+Plug 'kaicataldo/material.vim'
+Plug 'ghifarit53/tokyonight-vim'
+Plug 'tomasiser/vim-code-dark'
+"""""""""""""""""""""""""""""
+
+"""""""""""""""""""""""""""""
+"intellisense
+"""""""""""""""""""""""""""""
 Plug 'xavierd/clang_complete'
+if version >= 800
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+endif
+"Plug 'myhere/vim-nodejs-complete'
+"Plug 'moll/vim-node'
+"Plug 'artur-shaik/vim-javacomplete2'
+"""""""""""""""""""""""""""""
+
+"""""""""""""""""""""""""""""
+"misc
+"""""""""""""""""""""""""""""
+if has('cscope') && executable('cscope')
+    Plug 'vim-scripts/cscope.vim'
+endif
+Plug 'sheerun/vim-polyglot'
+Plug 'shiluotang/vim-maven-plugin'
+Plug 'vim-latex/vim-latex'
 if version > 703
     Plug 'Chiel92/vim-autoformat'
 endif
 "Plug 'adizero/vim-clang-format'
+Plug 'chrisbra/matchit'
 Plug 'iamcco/mathjax-support-for-mkdp'
 Plug 'iamcco/markdown-preview.vim'
-Plug 'shiluotang/vim-maven-plugin'
-"Plug 'artur-shaik/vim-javacomplete2'
+if version >= 800
+    Plug 'preservim/nerdtree'
+    Plug 'Xuyuanp/nerdtree-git-plugin'
+else
+    Plug 'preservim/nerdtree', {'tag': '5.3.3'}
+    Plug 'Xuyuanp/nerdtree-git-plugin', {'commit': 'f52c6b3ad7afe49a7f5231bd72c2e3f84c0a9706'}
+endif
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 if has('gui_running')
@@ -101,6 +145,7 @@ if has('gui_running')
         Plug 'ryanoasis/vim-devicons'
     endif
 endif
+"""""""""""""""""""""""""""""
 call plug#end()
 
 function! PlugLoaded(name)
@@ -156,7 +201,7 @@ if PlugLoaded('vim-airline')
 endif
 
 if PlugLoaded('cscope.vim')
-    let g:cscope_slient = 1
+    let g:cscope_silent = 1
     "Below is the minimum key mappings.
     nnoremap <leader>fa :call cscope#findInteractive(expand('<cword>'))<CR>
     nnoremap <leader>lo :call ToggleLocationList()<CR>
@@ -223,13 +268,35 @@ if PlugLoaded('vim-javacomplete2')
     endif
 endif
 
-if PlugLoaded('papercolor-theme')
+if PlugLoaded('vim-code-dark')
+    if !has('gui_running')
+        if &term =~ '.*-256color'
+            set t_Co=256
+            set t_AB=^[[48;5;%dm
+            set t_AF=^[[38;5;%dm
+        endif
+        if has('termguicolors')
+            set termguicolors
+            let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
+            let &t_8b = "\<Esc>[48:2:%lu:%lu:%lum"
+        endif
+    endif
+    "available: 'light', 'mirage', 'dark'
+    let ayucolor = 'mirage'
+    "available: 'default', 'palenight', 'ocean', 'lighter', 'darker'
+    "available: 'default-community', 'palenight-community', 'ocean-community'
+    "available: 'lighter-community', 'darker-community'
+    let g:material_theme_style = 'default'
+    let g:material_terminal_italics = 1
+    " available: night, storm
+    let g:tokyonight_style = 'storm'
+    let g:tokyonight_enable_italic = 1
     if has('win32')
         if has('gui_running')
-            colorscheme PaperColor
+            colorscheme solarized
         endif
     else
-        colorscheme PaperColor
+        colorscheme solarized
     endif
 endif
 
@@ -251,6 +318,7 @@ if has('autocmd')
     autocmd filetype cpp    setlocal textwidth=80 syntax=cpp.doxygen
     autocmd filetype php    setlocal syntax=php.doxygen
     autocmd filetype idl    setlocal syntax=idl.doxygen
+    autocmd filetype javascript setlocal syntax=javascript.doxygen
     autocmd filetype python let python_highlight_all = 1
     autocmd BufReadCmd *.nar call zip#Browse(expand("<amatch>"))
     autocmd BufReadCmd *.jar.original call zip#Browse(expand("<amatch>"))
