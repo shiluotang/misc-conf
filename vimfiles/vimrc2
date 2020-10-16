@@ -58,19 +58,13 @@ if empty(glob(expand('$HOME/.vim/autoload/plug.vim')))
 endif
 
 call plug#begin(expand('$HOME/.vim/plugged'))
-if has('cscope') && executable('cscope')
-    Plug 'vim-scripts/cscope.vim'
-endif
+"""""""""""""""""""""""""""""
+"scm
+"""""""""""""""""""""""""""""
 Plug 'vim-scripts/vcscommand.vim'
-Plug 'vim-scripts/Colour-Sampler-Pack'
-Plug 'vim-latex/vim-latex'
 if version >= 800
-    Plug 'preservim/nerdtree'
-    Plug 'Xuyuanp/nerdtree-git-plugin'
     Plug 'tpope/vim-fugitive'
 else
-    Plug 'preservim/nerdtree', {'tag': '5.3.3'}
-    Plug 'Xuyuanp/nerdtree-git-plugin', {'commit': 'f52c6b3ad7afe49a7f5231bd72c2e3f84c0a9706'}
     Plug 'tpope/vim-fugitive', {'tag': 'v3.1'}
 endif
 if has('nvim') || has('patch-8.0.902')
