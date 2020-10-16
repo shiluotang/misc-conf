@@ -99,12 +99,24 @@ Plug 'tomasiser/vim-code-dark'
 "intellisense
 """""""""""""""""""""""""""""
 Plug 'xavierd/clang_complete'
+"Plug 'artur-shaik/vim-javacomplete2'
 if version >= 800
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
+else
+    Plug 'leafgarland/typescript-vim'
+    Plug 'pangloss/vim-javascript'
+    "Plug 'myhere/vim-nodejs-complete'
+    "Plug 'moll/vim-node'
 endif
-"Plug 'myhere/vim-nodejs-complete'
-"Plug 'moll/vim-node'
-"Plug 'artur-shaik/vim-javacomplete2'
+"""""""""""""""""""""""""""""
+
+"""""""""""""""""""""""""""""
+"filetype
+"""""""""""""""""""""""""""""
+if exists('getcurpos')
+    Plug 'sheerun/vim-polyglot'
+endif
+Plug 'vim-latex/vim-latex'
 """""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""
@@ -113,9 +125,7 @@ endif
 if has('cscope') && executable('cscope')
     Plug 'vim-scripts/cscope.vim'
 endif
-Plug 'sheerun/vim-polyglot'
 Plug 'shiluotang/vim-maven-plugin'
-Plug 'vim-latex/vim-latex'
 if version > 703
     Plug 'Chiel92/vim-autoformat'
 endif
@@ -262,7 +272,7 @@ if PlugLoaded('vim-javacomplete2')
     endif
 endif
 
-if PlugLoaded('vim-code-dark')
+if PlugLoaded('papercolor-theme')
     if !has('gui_running')
         if &term =~ '.*-256color'
             set t_Co=256
@@ -287,10 +297,10 @@ if PlugLoaded('vim-code-dark')
     let g:tokyonight_enable_italic = 1
     if has('win32')
         if has('gui_running')
-            colorscheme solarized
+            colorscheme PaperColor
         endif
     else
-        colorscheme solarized
+        colorscheme PaperColor
     endif
 endif
 
