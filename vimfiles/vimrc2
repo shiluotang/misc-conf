@@ -13,8 +13,9 @@ if has('gui_running')
         "set guifont=Courier\ 10\ Pitch\ for\ Powerline\ 12
         "set guifont=Courier\ Prime\ for\ Powerline\ 12
         "set guifont=Courier\ for\ Powerline\ 12
-        set guifont=DroidSansMono\ Nerd\ Font\ Mono\ 12
+        "set guifont=DroidSansMono\ Nerd\ Font\ Mono\ 12
         "set guifont=Cousine\ Nerd\ Font\ Mono\ 12
+        set guifont=FuraCode\ Nerd\ Font\ Mono\ Light\ 12
     elseif has('x11')
         set guifont=*-lucidatypewriter-medium-r-normal-*-*-180-*-*-m-*-*
     elseif has('gui_win32')
@@ -105,8 +106,8 @@ if version >= 800
 else
     Plug 'leafgarland/typescript-vim'
     Plug 'pangloss/vim-javascript'
-    "Plug 'myhere/vim-nodejs-complete'
-    "Plug 'moll/vim-node'
+    Plug 'myhere/vim-nodejs-complete'
+    Plug 'moll/vim-node'
 endif
 """""""""""""""""""""""""""""
 
@@ -276,8 +277,20 @@ if PlugLoaded('papercolor-theme')
     if !has('gui_running')
         if &term =~ '.*-256color'
             set t_Co=256
-            set t_AB=^[[48;5;%dm
-            set t_AF=^[[38;5;%dm
+            if version >= 800
+                set t_AB=^[[48;5;%dm
+                set t_AF=^[[38;5;%dm
+            endif
+        elseif &term =~ "xterm"
+            if has("terminfo")
+                set t_Co=8
+                set t_Sf=<Esc>[3%p1%dm
+                set t_Sb=<Esc>[4%p1%dm
+            else
+                set t_Co=8
+                set t_Sf=<Esc>[3%dm
+                set t_Sb=<Esc>[4%dm
+            endif
         endif
         if has('termguicolors')
             set termguicolors
@@ -301,6 +314,9 @@ if PlugLoaded('papercolor-theme')
         endif
     else
         colorscheme PaperColor
+    endif
+    if exists('g:colors_name') && g:colors_name =~ 'PaperColor'
+        set background=light
     endif
 endif
 
