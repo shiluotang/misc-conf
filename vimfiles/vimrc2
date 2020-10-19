@@ -305,10 +305,15 @@ if PlugLoaded('papercolor-theme')
 endif
 
 if PlugLoaded('vim-devicons')
-  let g:WebDevIconsNerdTreeBeforeGlyphPadding = ' '
-  let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
-  let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
-  let g:webdevicons_conceal_nerdtree_brackets = 1
+    if has('gui_running')
+        let g:WebDevIconsNerdTreeBeforeGlyphPadding = ' '
+        let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
+    else
+        let g:WebDevIconsNerdTreeBeforeGlyphPadding = ' '
+        let g:WebDevIconsNerdTreeAfterGlyphPadding = ' '
+    endif
+    let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
+    let g:webdevicons_conceal_nerdtree_brackets = 1
 endif
 
 if has('multi_byte')
