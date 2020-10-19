@@ -117,6 +117,8 @@ endif
 """""""""""""""""""""""""""""
 if exists('getcurpos')
     Plug 'sheerun/vim-polyglot'
+else
+    Plug 'posva/vim-vue'
 endif
 Plug 'vim-latex/vim-latex'
 """""""""""""""""""""""""""""
