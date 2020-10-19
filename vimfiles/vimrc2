@@ -278,7 +278,7 @@ endif
 
 if PlugLoaded('papercolor-theme')
     "use local terminfo to solve terminal color problems
-    "$ mkdir -p ~/.terminfo/x
+    "$ mkdir -p ~/.terminfo/g
     "$ ln -s /usr/share/terminfo/g/gnome-256color ~/.terminfo/x/xterm
     "$ mkdir -p ~/.terminfo/s
     "$ ln -s /usr/share/terminfo/s/screen-256color-s ~/.terminfo/s/screen
