@@ -117,10 +117,10 @@ endif
 """""""""""""""""""""""""""""
 if exists('getcurpos')
     Plug 'sheerun/vim-polyglot'
-else
-    Plug 'posva/vim-vue'
 endif
+Plug 'posva/vim-vue'
 Plug 'vim-latex/vim-latex'
+"Plug 'leafOfTree/vim-vue-plugin'
 """""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""
