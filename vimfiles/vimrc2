@@ -30,16 +30,21 @@ if has('gui_running')
         "set guifont=DroidSansMonoNerdFontCompleteM-:h20
         "set guifont=FuraCodeNerdFontCompleteM-Light:h20
     endif
-    set guioptions-=a
-    set guioptions-=e
-    set guioptions-=g
+endif
+if has('gui')
+    set guioptions+=a
+    set guioptions+=P
+    "set guioptions+=A
     " preserve icon
     "set guioptions-=i
     set guioptions-=m
-    set guioptions-=r
-    set guioptions-=L
-    set guioptions-=t
     set guioptions-=T
+    set guioptions-=r
+    set guioptions-=R
+    set guioptions-=l
+    set guioptions-=L
+    set guioptions-=b
+    set guioptions-=h
 endif
 
 if empty(glob(expand('$HOME/.vim/autoload/plug.vim')))
@@ -79,22 +84,15 @@ endif
 """""""""""""""""""""""""""""
 "colorschemes
 """""""""""""""""""""""""""""
-Plug 'vim-scripts/Colour-Sampler-Pack'
-Plug 'junegunn/seoul256.vim'
-Plug 'morhetz/gruvbox'
-Plug 'cocopon/iceberg.vim'
-Plug 'NLKNguyen/papercolor-theme'
+"Plug 'vim-scripts/Colour-Sampler-Pack'
 Plug 'altercation/vim-colors-solarized'
+Plug 'flazz/vim-colorschemes'
 Plug 'chriskempson/base16-vim'
 Plug 'equt/paper.vim'
-Plug 'jacoborus/tender.vim'
 Plug 'dracula/vim', {'as': 'dracula.vim'}
-Plug 'ayu-theme/ayu-vim'
-Plug 'arcticicestudio/nord-vim'
 Plug 'rakr/vim-one'
-Plug 'kaicataldo/material.vim'
 Plug 'ghifarit53/tokyonight-vim'
-Plug 'tomasiser/vim-code-dark'
+Plug 'NLKNguyen/papercolor-theme'
 """""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""
@@ -102,6 +100,7 @@ Plug 'tomasiser/vim-code-dark'
 """""""""""""""""""""""""""""
 Plug 'xavierd/clang_complete'
 "Plug 'artur-shaik/vim-javacomplete2'
+"Plug 'shiluotang/vim-eclim'
 if version >= 800
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
 else
@@ -115,10 +114,11 @@ endif
 """""""""""""""""""""""""""""
 "filetype
 """""""""""""""""""""""""""""
-if exists('getcurpos')
+if exists('*getcurpos')
     Plug 'sheerun/vim-polyglot'
 endif
 Plug 'posva/vim-vue'
+Plug 'mustache/vim-mustache-handlebars'
 Plug 'vim-latex/vim-latex'
 "Plug 'leafOfTree/vim-vue-plugin'
 """""""""""""""""""""""""""""
@@ -314,6 +314,36 @@ if PlugLoaded('vim-devicons')
     endif
     let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
     let g:webdevicons_conceal_nerdtree_brackets = 1
+    let g:DevIconsEnableFoldersOpenClose = 1
+endif
+
+if PlugLoaded('vim-eclim')
+    if has("autocmd")
+        autocmd filetype java map <buffer> <LocalLeader>es :JavaSearch<CR>
+        autocmd filetype java map <buffer> <LocalLeader>eS :JavaSearchContext<CR>
+        autocmd filetype java map <buffer> <LocalLeader>ef :JavaFormat<CR>
+        autocmd filetype java map <buffer> <LocalLeader>eF :%JavaFormat<CR>
+        autocmd filetype java map <buffer> <LocalLeader>ei :JavaImport<CR>
+        autocmd filetype java map <buffer> <LocalLeader>eI :JavaImportOrganize<CR>
+        autocmd filetype java map <buffer> <LocalLeader>ed :JavaDocPreview<CR>
+        autocmd filetype java map <buffer> <LocalLeader>eD :JavaDocSearch<CR>
+        autocmd filetype java map <buffer> <LocalLeader>eh :JavaHierarchy<CR>
+        autocmd filetype java map <buffer> <LocalLeader>ec :JavaCallHierarchy<CR>
+        autocmd filetype java map <buffer> <LocalLeader>eC :JavaCallHierarchy!<CR>
+        autocmd filetype java map <buffer> <LocalLeader>ev :Validate<CR>
+        autocmd filetype java map <buffer> <LocalLeader>ep :JavaImpl<CR>
+
+        " add bean methods
+        autocmd filetype java map <buffer> <LocalLeader>eba :JavaGetSet<CR>
+        autocmd filetype java map <buffer> <LocalLeader>ebg :JavaGet<CR>
+        autocmd filetype java map <buffer> <LocalLeader>ebs :JavaSet<CR>
+
+        " other things
+        autocmd filetype java setlocal textwidth=80 formatoptions+=tm
+    endif
+    " disable eclim all languages validation
+    let g:EclimFileTypeValidate = 0
+    let g:EclimMakeLCD = 1
 endif
 
 if has('multi_byte')
