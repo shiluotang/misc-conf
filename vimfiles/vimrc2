@@ -16,7 +16,7 @@ if has('gui_running')
         "set guifont=DroidSansMono\ Nerd\ Font\ Mono\ 12
         "set guifont=Cousine\ Nerd\ Font\ Mono\ 12
         "set guifont=GoMono\ Nerd\ Font\ Mono\ 12
-        set guifont=FuraCode\ Nerd\ Font\ Mono\ Light\ 12
+        set guifont=FuraCode\ Nerd\ Font\ Mono\ Medium\ 12
     elseif has('x11')
         set guifont=*-lucidatypewriter-medium-r-normal-*-*-180-*-*-m-*-*
     elseif has('gui_win32')
