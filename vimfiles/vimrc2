@@ -99,7 +99,9 @@ Plug 'NLKNguyen/papercolor-theme'
 "intellisense
 """""""""""""""""""""""""""""
 Plug 'xavierd/clang_complete'
-"Plug 'artur-shaik/vim-javacomplete2', {'for': 'java'}
+if has('python3')
+    "Plug 'artur-shaik/vim-javacomplete2', {'for': 'java'}
+endif
 "Plug 'shiluotang/vim-eclim'
 if version >= 800
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -114,9 +116,10 @@ endif
 """""""""""""""""""""""""""""
 "filetype
 """""""""""""""""""""""""""""
-if exists('*getcurpos')
-    Plug 'sheerun/vim-polyglot'
-endif
+"if exists('*getcurpos')
+"    Plug 'sheerun/vim-polyglot'
+"endif
+Plug 'vim-scripts/aspvbs.vim'
 Plug 'posva/vim-vue'
 Plug 'mustache/vim-mustache-handlebars'
 Plug 'vim-latex/vim-latex'
@@ -142,7 +145,7 @@ if version >= 800
     Plug 'Xuyuanp/nerdtree-git-plugin'
 else
     Plug 'preservim/nerdtree', {'tag': '5.3.3'}
-    Plug 'Xuyuanp/nerdtree-git-plugin', {'commit': 'f52c6b3ad7afe49a7f5231bd72c2e3f84c0a9706'}
+    Plug 'Xuyuanp/nerdtree-git-plugin', {'commit': 'f52c6b3a'}
 endif
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
