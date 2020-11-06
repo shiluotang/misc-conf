@@ -99,7 +99,7 @@ Plug 'NLKNguyen/papercolor-theme'
 "intellisense
 """""""""""""""""""""""""""""
 Plug 'xavierd/clang_complete'
-"Plug 'artur-shaik/vim-javacomplete2'
+"Plug 'artur-shaik/vim-javacomplete2', {'for': 'java'}
 "Plug 'shiluotang/vim-eclim'
 if version >= 800
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
