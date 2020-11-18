@@ -87,12 +87,13 @@ endif
 "Plug 'vim-scripts/Colour-Sampler-Pack'
 Plug 'altercation/vim-colors-solarized'
 Plug 'flazz/vim-colorschemes'
+Plug 'joshdick/onedark.vim'
+Plug 'dracula/vim', {'as': 'dracula.vim'}
 Plug 'chriskempson/base16-vim'
 Plug 'equt/paper.vim'
-Plug 'dracula/vim', {'as': 'dracula.vim'}
 Plug 'rakr/vim-one'
 Plug 'ghifarit53/tokyonight-vim'
-Plug 'NLKNguyen/papercolor-theme'
+"Plug 'NLKNguyen/papercolor-theme'
 """""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""
@@ -104,7 +105,7 @@ if has('python3')
 endif
 "Plug 'shiluotang/vim-eclim'
 if version >= 800
-    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': 'javascript'}
 else
     Plug 'leafgarland/typescript-vim'
     Plug 'pangloss/vim-javascript'
@@ -289,31 +290,28 @@ if PlugLoaded('vim-javacomplete2')
     endif
 endif
 
-if PlugLoaded('papercolor-theme')
-    "use local terminfo to solve terminal color problems
-    "$ mkdir -p ~/.terminfo/g
-    "$ ln -s /usr/share/terminfo/g/gnome-256color ~/.terminfo/x/xterm
-    "$ mkdir -p ~/.terminfo/s
-    "$ ln -s /usr/share/terminfo/s/screen-256color-s ~/.terminfo/s/screen
-    "available: 'light', 'mirage', 'dark'
-    let ayucolor = 'mirage'
-    "available: 'default', 'palenight', 'ocean', 'lighter', 'darker'
-    "available: 'default-community', 'palenight-community', 'ocean-community'
-    "available: 'lighter-community', 'darker-community'
-    let g:material_theme_style = 'default'
-    let g:material_terminal_italics = 1
-    " available: night, storm
-    let g:tokyonight_style = 'storm'
-    let g:tokyonight_enable_italic = 1
-    if has('win32')
-        if has('gui_running')
-            colorscheme PaperColor
-        endif
+"use local terminfo to solve terminal color problems
+"$ mkdir -p ~/.terminfo/g
+"$ ln -s /usr/share/terminfo/g/gnome-256color ~/.terminfo/x/xterm
+"$ mkdir -p ~/.terminfo/s
+"$ ln -s /usr/share/terminfo/s/screen-256color-s ~/.terminfo/s/screen
+"available: 'light', 'mirage', 'dark'
+let ayucolor = 'mirage'
+"available: 'default', 'palenight', 'ocean', 'lighter', 'darker'
+"available: 'default-community', 'palenight-community', 'ocean-community'
+"available: 'lighter-community', 'darker-community'
+let g:material_theme_style = 'default'
+let g:material_terminal_italics = 1
+" available: night, storm
+let g:tokyonight_style = 'storm'
+let g:tokyonight_enable_italic = 1
+let g:molokai_original = 1
+colorscheme solarized
+if exists('g:colors_name') && g:colors_name =~ 'solarized'
+    if has('gui_running')
+        set background=dark
     else
-        colorscheme PaperColor
-    endif
-    if exists('g:colors_name') && g:colors_name =~ 'PaperColor'
-        set background=light
+        colorscheme darkblue
     endif
 endif
 
@@ -331,7 +329,15 @@ if PlugLoaded('vim-devicons')
 endif
 if PlugLoaded('nerdtree-git-plugin')
     let g:NERDTreeGitStatusConcealBrackets = 1
-    let g:NERDTreeGitStatusUseNerdFonts = 1
+    if has('gui_running')
+        if &guifont =~ 'Nerd Font'
+                        \ || &guifont =~ 'NerdFont'
+                        \ || &guifont =~ '_NF'
+            let g:NERDTreeGitStatusUseNerdFonts = 1
+        endif
+    elseif g:nerd_font_in_terminal == 1
+        let g:NERDTreeGitStatusUseNerdFonts = 1
+    endif
 endif
 
 if PlugLoaded('vim-eclim')
@@ -360,8 +366,12 @@ if PlugLoaded('vim-eclim')
     endif
     " disable eclim all languages validation
     let g:EclimFileTypeValidate = 0
-    let g:EclimMakeLCD = 1
+    let g:EclimMakeLCD = 0
 endif
+
+"if PlugLoaded('vim-polyglot')
+"    let g:polyglot_disabled = ['autoindent', 'sensible']
+"endif
 
 if has('multi_byte')
     set fileencodings=ucs-bom,utf-8
