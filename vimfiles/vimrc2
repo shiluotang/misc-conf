@@ -3,6 +3,9 @@ if has('win32')
     else
         let $LANG=expand('$lang') . '.UTF-8'
         set encoding=utf-8
+        if version >= 802 and has('iconv')
+            set makeencoding=char
+        endif
     endif
 endif
 source $VIMRUNTIME/vimrc_example.vim
@@ -76,7 +79,7 @@ else
 endif
 if has('nvim') || has('patch-8.0.902')
     Plug 'mhinz/vim-signify'
-else
+elseif version >= 704
     Plug 'mhinz/vim-signify', {'tag': 'legacy'}
 endif
 """""""""""""""""""""""""""""
@@ -144,12 +147,18 @@ Plug 'iamcco/markdown-preview.vim'
 if version >= 800
     Plug 'preservim/nerdtree'
     Plug 'Xuyuanp/nerdtree-git-plugin'
-else
-    Plug 'preservim/nerdtree', {'tag': '5.3.3'}
-    Plug 'Xuyuanp/nerdtree-git-plugin', {'commit': 'f52c6b3a'}
+elseif version >= 704
+    Plug 'preservim/nerdtree', {'tag': '5.3.3', 'as': 'nerdtree-vim74'}
+    Plug 'Xuyuanp/nerdtree-git-plugin', {'commit': 'f52c6b3a', 'as': 'nerdtree-git-plugin-vim4'}
+elseif version >= 703
+    Plug 'preservim/nerdtree', {'tag': '4.1.0', 'as': 'nerdtree-vim73'}
 endif
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+
+if version >= 704
+    Plug 'vim-airline/vim-airline'
+    Plug 'vim-airline/vim-airline-themes'
+endif
+
 "let g:nerd_font_in_terminal = 1
 if !exists('g:nerd_font_in_terminal')
     let g:nerd_font_in_terminal = 0
@@ -177,6 +186,8 @@ function! PlugLoaded(name)
 endfunction
 
 if PlugLoaded('nerdtree')
+            \ || PlugLoaded('nerdtree-vim74')
+            \ || PlugLoaded('nerdtree-vim73')
     if has("win32") || has("win64")
         if &encoding != 'utf-8'
             let NERDTreeDirArrows=0
