@@ -3,7 +3,7 @@ if has('win32')
     else
         let $LANG=expand('$lang') . '.UTF-8'
         set encoding=utf-8
-        if version >= 802 and has('iconv')
+        if version >= 802 && has('iconv')
             set makeencoding=char
         endif
     endif
@@ -102,7 +102,9 @@ Plug 'ghifarit53/tokyonight-vim'
 """""""""""""""""""""""""""""
 "intellisense
 """""""""""""""""""""""""""""
-Plug 'xavierd/clang_complete'
+if has('python') || has('python3')
+    Plug 'xavierd/clang_complete'
+endif
 if has('python3')
     "Plug 'artur-shaik/vim-javacomplete2', {'for': 'java'}
 endif
@@ -141,9 +143,10 @@ if version > 703
     Plug 'Chiel92/vim-autoformat'
 endif
 "Plug 'adizero/vim-clang-format'
-Plug 'chrisbra/matchit'
 Plug 'iamcco/mathjax-support-for-mkdp'
-Plug 'iamcco/markdown-preview.vim'
+if has('python') || has('python3')
+    Plug 'iamcco/markdown-preview.vim'
+endif
 if version >= 800
     Plug 'preservim/nerdtree'
     Plug 'Xuyuanp/nerdtree-git-plugin'
@@ -282,7 +285,7 @@ if PlugLoaded('clang_complete')
         endfor
     elseif has('win32')
         let s:candidate = expand('$PROGRAMFILES/LLVM/bin/libclang.dll')
-        if executable(s:candidate)
+        if filereadable(s:candidate)
             let g:clang_library_path = s:candidate
             let g:clang_use_library = 1
         endif
@@ -416,3 +419,7 @@ set tabstop=4
 set shiftwidth=4
 set expandtab
 set number
+
+if filereadable(expand('$VIMRUNTIME/macros/matchit.vim'))
+    execute "source " . expand('$VIMRUNTIME/macros/matchit.vim')
+endif
