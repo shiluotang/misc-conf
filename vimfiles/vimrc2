@@ -50,20 +50,26 @@ if has('gui')
     set guioptions-=h
 endif
 
-if empty(glob(expand('$HOME/.vim/autoload/plug.vim')))
+let g:vim_plug_path_prefix = &rtp[0 : stridx(&rtp, ",") - 1]
+let g:vim_plug_path = g:vim_plug_path_prefix . "/autoload/plug.vim"
+
+if empty(glob(expand(g:vim_plug_path)))
     if executable('curl')
-        silent !curl -fLo ~/.vim/autoload/plug.vim
-                    \ --create-dirs
-                    \ 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+        execute 'silent !curl -fLo ' . g:vim_plug_path .' --create-dirs "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"'
         autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
     elseif executable('wget')
-        if exists('*mkdir') && mkdir(expand('$HOME/.vim/autoload'), "p")
-            silent !wget -O ~/.vim/autoload/plug.vim
-                        \ --no-check-certificate
-                        \ 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-            autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+        if !isdirectory(expand(g:vim_plug_path_prefix . '/autoload'))
+            if has('*mkdir')
+                mkdir(expand(g:vim_plug_path_prefix . '/autoload'), 'p')
+            else
+                execute 'silent !mkdir ' . expand(g:vim_plug_path_prefix)
+                execute 'silent !mkdir ' . expand(g:vim_plug_path_prefix . '/autoload')
+            endif
         endif
+        execute 'silent !wget -O ' . expand(g:vim_plug_path) . ' --no-check-certificate "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"'
+        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
     else
+        echoerr "curl and wget are all missing!!!"
     endif
 endif
 
@@ -152,7 +158,7 @@ if version >= 800
     Plug 'Xuyuanp/nerdtree-git-plugin'
 elseif version >= 704
     Plug 'preservim/nerdtree', {'tag': '5.3.3', 'as': 'nerdtree-vim74'}
-    Plug 'Xuyuanp/nerdtree-git-plugin', {'commit': 'f52c6b3a', 'as': 'nerdtree-git-plugin-vim4'}
+    Plug 'Xuyuanp/nerdtree-git-plugin', {'commit': 'f52c6b3a', 'as': 'nerdtree-git-plugin-vim74'}
 elseif version >= 703
     Plug 'preservim/nerdtree', {'tag': '4.1.0', 'as': 'nerdtree-vim73'}
 endif
@@ -289,6 +295,22 @@ if PlugLoaded('clang_complete')
             let g:clang_library_path = s:candidate
             let g:clang_use_library = 1
         endif
+        if has('python_compiled')
+            if &pythondll == "python27.dll" && !exists('$PYTHONHOME')
+                let s:candidate = expand('C:/Python27')
+                if filereadable(expand(s:candidate . '/DLLs/' . &pythondll))
+                    execute 'set pythonhome=' . s:candidate
+                endif
+            endif
+        endif
+        if has('python3_compiled')
+            if &pythonthreedll == "python37.dll" && !exists('$PYTHONHOME')
+                let s:candidate = expand('C:/Python37')
+                if filereadable(expand(s:candidate . '/DLLs/python' . &pythonthreedll))
+                    execute 'set pythonthreehome=' . s:candidate
+                endif
+            endif
+        en
     endif
 endif
 
