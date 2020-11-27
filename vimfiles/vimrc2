@@ -171,6 +171,7 @@ if version >= 704
     Plug 'vim-airline/vim-airline-themes'
 elseif version >= 703
     Plug 'itchyny/lightline.vim'
+    Plug 'itchyny/vim-gitbranch'
 endif
 
 "let g:nerd_font_in_terminal = 1
@@ -413,6 +414,21 @@ endif
 "if PlugLoaded('vim-polyglot')
 "    let g:polyglot_disabled = ['autoindent', 'sensible']
 "endif
+
+if PlugLoaded('lightline.vim')
+    if PlugLoaded('vim-gitbranch')
+        let g:lightline = {
+              \ 'active': {
+              \   'left': [ [ 'mode', 'paste' ],
+              \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+              \ },
+              \ 'component_function': {
+              \   'gitbranch': 'gitbranch#name'
+              \ },
+              \ }
+    endif
+endif
+
 
 if has('multi_byte')
     set fileencodings=ucs-bom,utf-8
