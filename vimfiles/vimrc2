@@ -79,9 +79,11 @@ call plug#begin(expand('$HOME/.vim/plugged'))
 """""""""""""""""""""""""""""
 Plug 'vim-scripts/vcscommand.vim'
 if version >= 800
-    Plug 'tpope/vim-fugitive'
-else
-    Plug 'tpope/vim-fugitive', {'tag': 'v3.1'}
+    Plug 'tpope/vim-fugitive', {'as': 'vim-fugitive-vim8'}
+elseif version >= 704
+    Plug 'tpope/vim-fugitive', {'tag': 'v3.1', 'as': 'vim-fugitive-vim74'}
+elseif version >= 703
+    Plug 'tpope/vim-fugitive', {'tag': 'v2.2', 'as': 'vim-fugitive-vim73'}
 endif
 if has('nvim') || has('patch-8.0.902')
     Plug 'mhinz/vim-signify'
@@ -166,6 +168,8 @@ endif
 if version >= 704
     Plug 'vim-airline/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
+elseif version >= 703
+    Plug 'itchyny/lightline.vim'
 endif
 
 "let g:nerd_font_in_terminal = 1
