@@ -37,6 +37,7 @@ endif
 if has('gui')
     set guioptions+=a
     set guioptions+=P
+    set guioptions+=c
     "set guioptions+=A
     " preserve icon
     "set guioptions-=i
