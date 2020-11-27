@@ -187,6 +187,10 @@ if has('gui_running')
 elseif g:nerd_font_in_terminal == 1
     Plug 'ryanoasis/vim-devicons'
 endif
+
+if version >= 704
+    Plug 'mhinz/vim-startify'
+endif
 """""""""""""""""""""""""""""
 call plug#end()
 
