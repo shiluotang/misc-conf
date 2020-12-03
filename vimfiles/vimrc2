@@ -27,11 +27,13 @@ if has('gui_running')
         set guifont=Anonymice_Powerline:h10:cANSI
         set guifont=Cousine_NF:h10:cANSI
     elseif has('gui_macvim') || has('gui_mac')
+        set guifont=Courier:h12
         "set guifont=CousineForPowerline:h12
         "set guifont=CourierPrimeForPowerline:h20
-        set guifont=CourierForPowerline:h20
+        "set guifont=CourierForPowerline:h12
         "set guifont=DroidSansMonoNerdFontCompleteM-:h20
-        "set guifont=FuraCodeNerdFontCompleteM-Light:h20
+        "set guifont=FuraCodeNerdFontCompleteM-Regular:h12
+        "set guifont=GoMonoForPowerline:h25
     endif
 endif
 if has('gui')
@@ -61,7 +63,7 @@ if empty(glob(expand(g:vim_plug_path)))
     elseif executable('wget')
         if !isdirectory(expand(g:vim_plug_path_prefix . '/autoload'))
             if has('*mkdir')
-                mkdir(expand(g:vim_plug_path_prefix . '/autoload'), 'p')
+                execute mkdir(expand(g:vim_plug_path_prefix . '/autoload'), 'p')
             else
                 execute 'silent !mkdir ' . expand(g:vim_plug_path_prefix)
                 execute 'silent !mkdir ' . expand(g:vim_plug_path_prefix . '/autoload')
@@ -145,7 +147,7 @@ Plug 'vim-latex/vim-latex'
 "misc
 """""""""""""""""""""""""""""
 if has('cscope') && executable('cscope')
-    Plug 'vim-scripts/cscope.vim'
+    Plug 'brookhong/cscope.vim', {'as': 'cscove'}
 endif
 Plug 'shiluotang/vim-maven-plugin'
 if version > 703
@@ -188,9 +190,9 @@ elseif g:nerd_font_in_terminal == 1
     Plug 'ryanoasis/vim-devicons'
 endif
 
-if version >= 704
-    Plug 'mhinz/vim-startify'
-endif
+"if version >= 704
+"    Plug 'mhinz/vim-startify'
+"endif
 """""""""""""""""""""""""""""
 call plug#end()
 
@@ -252,28 +254,28 @@ if PlugLoaded('vim-airline')
     endif
 endif
 
-if PlugLoaded('cscope.vim')
+if PlugLoaded('cscove')
     let g:cscope_silent = 1
     "Below is the minimum key mappings.
-    nnoremap <leader>fa :call cscope#findInteractive(expand('<cword>'))<CR>
+    nnoremap <leader>fa :call CscopeFindInteractive(expand('<cword>'))<CR>
     nnoremap <leader>lo :call ToggleLocationList()<CR>
     "Some optional key mappings to search directly.
     " s: Find this C symbol
-    nnoremap  <leader>fs :call cscope#find('s', expand('<cword>'))<CR>
+    nnoremap  <leader>fs :call CscopeFind('s', expand('<cword>'))<CR>
     " g: Find this definition
-    nnoremap  <leader>fg :call cscope#find('g', expand('<cword>'))<CR>
+    nnoremap  <leader>fg :call CscopeFind('g', expand('<cword>'))<CR>
     " d: Find functions called by this function
-    nnoremap  <leader>fd :call cscope#find('d', expand('<cword>'))<CR>
+    nnoremap  <leader>fd :call CscopeFind('d', expand('<cword>'))<CR>
     " c: Find functions calling this function
-    nnoremap  <leader>fc :call cscope#find('c', expand('<cword>'))<CR>
+    nnoremap  <leader>fc :call CscopeFind('c', expand('<cword>'))<CR>
     " t: Find this text string
-    nnoremap  <leader>ft :call cscope#find('t', expand('<cword>'))<CR>
+    nnoremap  <leader>ft :call CscopeFind('t', expand('<cword>'))<CR>
     " e: Find this egrep pattern
-    nnoremap  <leader>fe :call cscope#find('e', expand('<cword>'))<CR>
+    nnoremap  <leader>fe :call CscopeFind('e', expand('<cword>'))<CR>
     " f: Find this file
-    nnoremap  <leader>ff :call cscope#find('f', expand('<cword>'))<CR>
+    nnoremap  <leader>ff :call CscopeFind('f', expand('<cword>'))<CR>
     " i: Find files #including this file
-    nnoremap  <leader>fi :call cscope#find('i', expand('<cword>'))<CR>
+    nnoremap  <leader>fi :call CscopeFind('i', expand('<cword>'))<CR>
 endif
 
 if PlugLoaded('vcscommand.vim')
@@ -443,6 +445,7 @@ endif
 if has('autocmd')
     autocmd filetype c      setlocal textwidth=80 syntax=c.doxygen
     autocmd filetype cpp    setlocal textwidth=80 syntax=cpp.doxygen
+    autocmd filetype java   setlocal textwidth=80
     autocmd filetype php    setlocal syntax=php.doxygen
     autocmd filetype idl    setlocal syntax=idl.doxygen
     autocmd filetype javascript setlocal syntax=javascript.doxygen
