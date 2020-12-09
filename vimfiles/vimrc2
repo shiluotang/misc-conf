@@ -58,7 +58,9 @@ let g:vim_plug_path = g:vim_plug_path_prefix . "/autoload/plug.vim"
 
 if empty(glob(expand(g:vim_plug_path)))
     if executable('curl')
-        execute 'silent !curl -fLo ' . g:vim_plug_path .' --create-dirs "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"'
+        execute 'silent !curl -fLo ' . g:vim_plug_path
+                    \ . ' --create-dirs '
+                    \ . '"https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"'
         autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
     elseif executable('wget')
         if !isdirectory(expand(g:vim_plug_path_prefix . '/autoload'))
@@ -69,7 +71,9 @@ if empty(glob(expand(g:vim_plug_path)))
                 execute 'silent !mkdir ' . expand(g:vim_plug_path_prefix . '/autoload')
             endif
         endif
-        execute 'silent !wget -O ' . expand(g:vim_plug_path) . ' --no-check-certificate "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"'
+        execute 'silent !wget -O ' . expand(g:vim_plug_path)
+                    \ . ' --no-check-certificate '
+                    \ . '"https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"'
         autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
     else
         echoerr "curl and wget are all missing!!!"
@@ -190,12 +194,10 @@ elseif g:nerd_font_in_terminal == 1
     Plug 'ryanoasis/vim-devicons'
 endif
 
-"if version >= 704
-"    Plug 'mhinz/vim-startify'
-"endif
 if executable('w3m')
     Plug 'yuratomo/w3m.vim'
 endif
+Plug 'vim-scripts/dbext.vim'
 """""""""""""""""""""""""""""
 call plug#end()
 
@@ -426,7 +428,7 @@ endif
 
 if PlugLoaded('lightline.vim')
     if PlugLoaded('vim-gitbranch')
-        let g:lightline = 
+        let g:lightline =
                     \ {
                     \   'active': {
                     \     'left': [ [ 'mode', 'paste' ],
@@ -440,7 +442,7 @@ if PlugLoaded('lightline.vim')
     elseif PlugLoaded('vim-fugitive-vim8')
                 \ || PlugLoaded('vim-fugitive-vim74')
                 \ || PlugLoaded('vim-fugitive-vim73')
-        let g:lightline = 
+        let g:lightline =
                     \ {
                     \   'active': {
                     \     'left': [ [ 'mode', 'paste' ],
@@ -466,6 +468,19 @@ if PlugLoaded('lightline.vim')
           return winwidth(0) > 70 ? (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
         endfunction
     endif
+endif
+
+if PlugLoaded('w3m.vim')
+    let g:w3m#homepage = "http://news.baidu.com/"
+    "let g:w3m#search_engine = 'http://search.yahoo.co.jp/search?'
+    "            \ . 'search.x=1&fr=top_ga1_sa_124&tid=top_ga1_sa_124&ei='
+    "            \ . &encoding
+    "            \ . '&aq=&oq=&p='
+    let g:w3m#search_engine = 'https://www.baidu.com/s?ie='
+                \ . &encoding
+                \ . '&wd='
+    let g:w3m#lang = 'en_US'
+    let g:w3m#disable_vimproc = 1
 endif
 
 if has('multi_byte')
