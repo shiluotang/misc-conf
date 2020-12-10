@@ -29,6 +29,7 @@ if has('gui_running')
         set guifont=Cousine_NF:h10:cANSI
     elseif has('gui_macvim') || has('gui_mac')
         set guifont=Courier:h12
+        set guifontwide=KaiTi:h12
         "set guifont=CousineForPowerline:h12
         "set guifont=CourierPrimeForPowerline:h20
         "set guifont=CourierForPowerline:h12
