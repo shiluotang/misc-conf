@@ -13,6 +13,7 @@ if has('gui_running')
     source $VIMRUNTIME/gvimrc_example.vim
     if has('gui_gtk')
         "set guifont=Courier\ 10\ Pitch\ 12
+        set guifontwide=AR\ PL\ UKai\ CN\ 12
         "set guifont=Courier\ 10\ Pitch\ for\ Powerline\ 12
         "set guifont=Courier\ Prime\ for\ Powerline\ 12
         "set guifont=Courier\ for\ Powerline\ 12
@@ -194,10 +195,11 @@ elseif g:nerd_font_in_terminal == 1
     Plug 'ryanoasis/vim-devicons'
 endif
 
+Plug 'vim-scripts/dbext.vim'
 if executable('w3m')
     Plug 'yuratomo/w3m.vim'
 endif
-Plug 'vim-scripts/dbext.vim'
+Plug 'thinca/vim-fontzoom'
 """""""""""""""""""""""""""""
 call plug#end()
 
