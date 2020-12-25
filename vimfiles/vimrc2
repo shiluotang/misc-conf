@@ -1,7 +1,7 @@
 if has('win32')
     if expand('$lang') =~ '.*UTF-8'
     else
-        let $LANG=expand('$lang') . '.UTF-8'
+        "let $LANG=expand('$lang') . '.UTF-8'
         set encoding=utf-8
         if version >= 802 && has('iconv')
             set makeencoding=char
@@ -24,9 +24,14 @@ if has('gui_running')
     elseif has('x11')
         set guifont=*-lucidatypewriter-medium-r-normal-*-*-180-*-*-m-*-*
     elseif has('gui_win32')
+        scriptencoding utf8
+        set guifontwide=楷体:h10:cGB2312:qDRAFT
+        scriptencoding
         set guifont=Courier_New:h10
-        set guifont=Anonymice_Powerline:h10:cANSI
-        set guifont=Cousine_NF:h10:cANSI
+        "set guifont=Anonymice_Powerline:h10:cANSI
+        "set guifont=Cousine_NF:h10:cANSI
+        "set guifont=DroidSansMono_NF:h10:cANSI
+        "set guifont=FiraCode_Nerd_Font_Mono:h10:cANSI:qDRAFT
     elseif has('gui_macvim') || has('gui_mac')
         set guifont=Courier:h12
         set guifontwide=KaiTi:h12
