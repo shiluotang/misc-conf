@@ -13,14 +13,14 @@ if has('gui_running')
     source $VIMRUNTIME/gvimrc_example.vim
     if has('gui_gtk')
         "set guifont=Courier\ 10\ Pitch\ 12
-        set guifontwide=AR\ PL\ UKai\ CN\ 12
+        set guifontwide=AR\ PL\ UKai\ CN\ 10
         "set guifont=Courier\ 10\ Pitch\ for\ Powerline\ 12
-        "set guifont=Courier\ Prime\ for\ Powerline\ 12
+        set guifont=Courier\ Prime\ for\ Powerline\ 10
         "set guifont=Courier\ for\ Powerline\ 12
         "set guifont=DroidSansMono\ Nerd\ Font\ Mono\ 12
         "set guifont=Cousine\ Nerd\ Font\ Mono\ 12
         "set guifont=GoMono\ Nerd\ Font\ Mono\ 12
-        set guifont=FuraCode\ Nerd\ Font\ Mono\ Light\ 10
+        "set guifont=FuraCode\ Nerd\ Font\ Mono\ Light\ 10
     elseif has('x11')
         set guifont=*-lucidatypewriter-medium-r-normal-*-*-180-*-*-m-*-*
     elseif has('gui_win32')
@@ -118,7 +118,7 @@ Plug 'chriskempson/base16-vim'
 Plug 'equt/paper.vim'
 Plug 'rakr/vim-one'
 Plug 'ghifarit53/tokyonight-vim'
-"Plug 'NLKNguyen/papercolor-theme'
+Plug 'NLKNguyen/papercolor-theme'
 """""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""
@@ -127,6 +127,7 @@ Plug 'ghifarit53/tokyonight-vim'
 if has('python') || has('python3')
     Plug 'xavierd/clang_complete'
 endif
+"Plug 'vim-scripts/javacomplete'
 if has('python3')
     "Plug 'artur-shaik/vim-javacomplete2', {'for': 'java'}
 endif
@@ -368,13 +369,11 @@ let g:material_terminal_italics = 1
 let g:tokyonight_style = 'storm'
 let g:tokyonight_enable_italic = 1
 let g:molokai_original = 1
-colorscheme solarized
-if exists('g:colors_name') && g:colors_name =~ 'solarized'
-    if has('gui_running')
-        set background=dark
-    else
-        colorscheme darkblue
-    endif
+if has('gui_running')
+    set background=dark
+    colorscheme solarized
+else
+    colorscheme darkblue
 endif
 
 if PlugLoaded('vim-devicons')
@@ -490,6 +489,38 @@ if PlugLoaded('w3m.vim')
                 \ . '&wd='
     let g:w3m#lang = 'en_US'
     let g:w3m#disable_vimproc = 1
+endif
+
+function DumpMavenClasspath()
+    let s:found = findfile('pom.xml', '')
+    let s:dir = fnamemodify(s:found, ':p:h')
+    if !empty(s:found)
+        call system('mvn -o -q -f '
+                    \ . s:found
+                    \ . ' dependency:build-classpath'
+                    \ . ' -Dmdep.cpFile=.jccp')
+        let s:classpaths_file = s:dir . '/.jccp'
+        if filereadable(s:classpaths_file)
+            for line in readfile(s:classpaths_file, '', 1)
+                "for entry in split(line, ':')
+                "    echo entry
+                "endfor
+                call javacomplete#SetClassPath(line)
+                if isdirectory(s:dir . '/target/classes')
+                    call javacomplete#AddClassPath(s:dir . '/target/classes')
+                endif
+            endfor
+        else
+            echo s:classpaths_file . ' is not readable'
+        endif
+    endif
+endfunction
+
+if PlugLoaded('javacomplete')
+    augroup JavaComplete
+        autocmd filetype java,pom.xml setlocal omnifunc=javacomplete#Complete
+        autocmd filetype java call DumpMavenClasspath()
+    augroup END
 endif
 
 if has('multi_byte')
