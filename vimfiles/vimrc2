@@ -102,7 +102,7 @@ endif
 if has('nvim') || has('patch-8.0.902')
     Plug 'mhinz/vim-signify'
 elseif version >= 704
-    Plug 'mhinz/vim-signify', {'tag': 'legacy'}
+    Plug 'mhinz/vim-signify', {'tag': 'legacy', 'as': 'vim-signify-vim74'}
 endif
 """""""""""""""""""""""""""""
 
@@ -133,7 +133,7 @@ if has('python3')
 endif
 "Plug 'shiluotang/vim-eclim'
 if version >= 800
-    Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': 'javascript'}
+    Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': 'javascript,java'}
 else
     Plug 'leafgarland/typescript-vim'
     Plug 'pangloss/vim-javascript'
