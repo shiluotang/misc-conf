@@ -87,6 +87,17 @@ if empty(glob(expand(g:vim_plug_path)))
     endif
 endif
 
+function IsPythonEnabled()
+    if version >= 800
+        return has('python3_compiled')
+                    \ || has('python3_dynamic')
+                    \ || has('python_compiled')
+                    \ || has('python_dynamic')
+    else
+        return has('python3') || has('python')
+    endif
+endfunction
+
 call plug#begin(expand('$HOME/.vim/plugged'))
 """""""""""""""""""""""""""""
 "scm
@@ -119,21 +130,23 @@ Plug 'equt/paper.vim'
 Plug 'rakr/vim-one'
 Plug 'ghifarit53/tokyonight-vim'
 Plug 'NLKNguyen/papercolor-theme'
+Plug 'junegunn/seoul256.vim'
 """""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""
 "intellisense
 """""""""""""""""""""""""""""
-if has('python') || has('python3')
+if IsPythonEnabled()
     Plug 'xavierd/clang_complete'
 endif
-"Plug 'vim-scripts/javacomplete'
-if has('python3')
+"Plug 'vim-scripts/javacomplete', {'for', 'java'}
+if IsPythonEnabled()
     "Plug 'artur-shaik/vim-javacomplete2', {'for': 'java'}
 endif
 "Plug 'shiluotang/vim-eclim'
 if version >= 800
-    Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': 'javascript,java'}
+    Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': 'vim,javascript,java,cs'}
+    Plug 'OmniSharp/omnisharp-vim', {'for': 'cs'}
 else
     Plug 'leafgarland/typescript-vim'
     Plug 'pangloss/vim-javascript'
@@ -167,7 +180,7 @@ if version > 703
 endif
 "Plug 'adizero/vim-clang-format'
 Plug 'iamcco/mathjax-support-for-mkdp'
-if has('python') || has('python3')
+if IsPythonEnabled()
     Plug 'iamcco/markdown-preview.vim'
 endif
 if version >= 800
@@ -207,6 +220,9 @@ if executable('w3m')
     Plug 'yuratomo/w3m.vim'
 endif
 Plug 'thinca/vim-fontzoom'
+if executable('ctags')
+    Plug 'preservim/tagbar'
+endif
 """""""""""""""""""""""""""""
 call plug#end()
 
@@ -246,6 +262,7 @@ if PlugLoaded('vim-airline')
         let g:airline#extensions#branch#enabled = 0
     endif
     let g:airline#extensions#tabline#enabled = 1
+    let g:airline#extensions#searchcount#enabled = 0
     "let g:airline#extensions#whitespace#enabled = 1
     "if PlugLoaded('vcscommand.vim')
     "    if !PlugLoaded('vim-fugitive')
@@ -372,8 +389,10 @@ let g:molokai_original = 1
 if has('gui_running')
     set background=dark
     colorscheme solarized
+    "colorscheme paintbox
+    "colorscheme kalisi
 else
-    colorscheme darkblue
+    colorscheme seoul256
 endif
 
 if PlugLoaded('vim-devicons')
@@ -492,15 +511,17 @@ if PlugLoaded('w3m.vim')
 endif
 
 function DumpMavenClasspath()
-    let s:found = findfile('pom.xml', '')
+    let s:classpath_filename = '.jccp'
+    let s:found = findfile('pom.xml', '.;')
     let s:dir = fnamemodify(s:found, ':p:h')
     if !empty(s:found)
-        call system('mvn -o -q -f '
+        call system('mvn -o -f -q'
                     \ . s:found
-                    \ . ' dependency:build-classpath'
-                    \ . ' -Dmdep.cpFile=.jccp')
-        let s:classpaths_file = s:dir . '/.jccp'
+                    \ . ' dependency:build-classpath -Dmdep.cpFile='
+                    \ . s:classpath_filename)
+        let s:classpaths_file = s:dir . '/' . s:classpath_filename
         if filereadable(s:classpaths_file)
+            echo s:classpaths_file . ' is readable!'
             for line in readfile(s:classpaths_file, '', 1)
                 "for entry in split(line, ':')
                 "    echo entry
@@ -511,16 +532,43 @@ function DumpMavenClasspath()
                 endif
             endfor
         else
-            echo s:classpaths_file . ' is not readable'
+            echo s:classpaths_file . ' not readable!'
         endif
     endif
 endfunction
 
 if PlugLoaded('javacomplete')
     augroup JavaComplete
-        autocmd filetype java,pom.xml setlocal omnifunc=javacomplete#Complete
+        autocmd filetype java setlocal omnifunc=javacomplete#Complete
         autocmd filetype java call DumpMavenClasspath()
     augroup END
+endif
+
+if PlugLoaded('coc.nvim')
+    " code navigation.
+    nmap <silent>   <Leader>gd <Plug>(coc-definition)
+    nmap <silent>   <Leader>gy <Plug>(coc-type-definition)
+    nmap <silent>   <Leader>gi <Plug>(coc-implementation)
+    nmap <silent>   <Leader>gr <Plug>(coc-references)
+    nmap <silent>   <Leader>gf :CocAction quickfix<CR>
+    nmap            <leader>rn <Plug>(coc-rename)
+
+    " Use K to show documentation in preview window.
+    nnoremap <silent> <leader>gk :call <SID>show_documentation()<CR>
+
+    function! s:show_documentation()
+        if (index(['vim','help'], &filetype) >= 0)
+            execute 'h '.expand('<cword>')
+        elseif (coc#rpc#ready())
+            call CocActionAsync('doHover')
+        else
+            execute '!' . &keywordprg . " " . expand('<cword>')
+        endif
+    endfunction
+endif
+
+if PlugLoaded('tagbar')
+    nmap <F2> :TagbarToggle<CR>
 endif
 
 if has('multi_byte')
