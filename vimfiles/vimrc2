@@ -11,6 +11,7 @@ endif
 source $VIMRUNTIME/vimrc_example.vim
 if has('gui_running')
     source $VIMRUNTIME/gvimrc_example.vim
+    set cmdheight=1
     if has('gui_gtk')
         "set guifont=Courier\ 10\ Pitch\ 12
         set guifontwide=AR\ PL\ UKai\ CN\ 10
@@ -145,7 +146,10 @@ if IsPythonEnabled()
 endif
 "Plug 'shiluotang/vim-eclim'
 if version >= 800
-    Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': 'vim,javascript,java,cs'}
+    Plug 'neoclide/coc.nvim', {
+                \ 'branch': 'release',
+                \ 'for': ['vim', 'javascript', 'java', 'cs', 'json']
+                \ }
     Plug 'OmniSharp/omnisharp-vim', {'for': 'cs'}
 else
     Plug 'leafgarland/typescript-vim'
@@ -263,6 +267,9 @@ if PlugLoaded('vim-airline')
     endif
     let g:airline#extensions#tabline#enabled = 1
     let g:airline#extensions#searchcount#enabled = 0
+    if PlugLoaded('coc.nvim')
+        let g:airline#extensions#coc#enabled = 1
+    endif
     "let g:airline#extensions#whitespace#enabled = 1
     "if PlugLoaded('vcscommand.vim')
     "    if !PlugLoaded('vim-fugitive')
@@ -539,6 +546,32 @@ function DumpMavenClasspath()
     endif
 endfunction
 
+function DumpMavenClasspath2()
+    let s:found = findfile('pom.xml', '.;')
+    let s:dir = fnamemodify(s:found, ':p:h')
+    if !empty(s:found)
+        let s:cmd = 'mvn -o -f '
+                    \ . shellescape(s:found)
+                    \ . ' dependency:build-classpath'
+        let s:lines = []
+        if exists('*systemlist')
+            let s:lines = systemlist(s:cmd)
+        else
+            let s:lines = split(system(s:cmd), '\n')
+        endif
+        let s:classpaths = []
+        for s:line in s:lines
+            if s:line =~ '^['
+            else
+                call extend(s:classpaths, split(s:line, ':'))
+            endif
+        endfor
+        for s:classpath in uniq(sort(s:classpaths))
+            echo s:classpath
+        endfor
+    endif
+endfunction
+
 if PlugLoaded('javacomplete')
     augroup JavaComplete
         autocmd filetype java setlocal omnifunc=javacomplete#Complete
@@ -567,6 +600,7 @@ if PlugLoaded('coc.nvim')
             execute '!' . &keywordprg . " " . expand('<cword>')
         endif
     endfunction
+    autocmd filetype vim,javascript,java,cs,json setlocal tagfunc=CocTagFunc
 endif
 
 if PlugLoaded('tagbar')
