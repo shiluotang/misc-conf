@@ -105,7 +105,7 @@ call plug#begin(expand('$HOME/.vim/plugged'))
 """""""""""""""""""""""""""""
 Plug 'vim-scripts/vcscommand.vim'
 if version >= 800
-    Plug 'tpope/vim-fugitive', {'as': 'vim-fugitive-vim8'}
+    Plug 'tpope/vim-fugitive', {'as': 'vim-fugitive'}
 elseif version >= 704
     Plug 'tpope/vim-fugitive', {'tag': 'v3.1', 'as': 'vim-fugitive-vim74'}
 elseif version >= 703
@@ -140,7 +140,7 @@ Plug 'junegunn/seoul256.vim'
 if IsPythonEnabled()
     Plug 'xavierd/clang_complete'
 endif
-"Plug 'vim-scripts/javacomplete', {'for', 'java'}
+"Plug 'vim-scripts/javacomplete', {'for': 'java'}
 if IsPythonEnabled()
     "Plug 'artur-shaik/vim-javacomplete2', {'for': 'java'}
 endif
@@ -474,7 +474,7 @@ if PlugLoaded('lightline.vim')
                     \   }
                     \ }
 
-    elseif PlugLoaded('vim-fugitive-vim8')
+    elseif PlugLoaded('vim-fugitive')
                 \ || PlugLoaded('vim-fugitive-vim74')
                 \ || PlugLoaded('vim-fugitive-vim73')
         let g:lightline =
