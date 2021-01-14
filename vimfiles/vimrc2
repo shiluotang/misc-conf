@@ -116,6 +116,7 @@ function IsPythonEnabled()
     endif
     return s:pyver
 endfunction
+
 function IsPython3Enabled()
     return IsPythonEnabled() >= 3
 endfunction
@@ -181,15 +182,16 @@ if version >= 800
     endif
     Plug 'OmniSharp/omnisharp-vim', {'for': 'cs'}
 else
+    if IsPython3Enabled()
+        Plug 'artur-shaik/vim-javacomplete2', {'for': 'java'}
+    else
+        Plug 'vim-scripts/javacomplete', {'for': 'java'}
+    endif
+    "Plug 'shiluotang/vim-eclim'
     Plug 'leafgarland/typescript-vim'
     Plug 'pangloss/vim-javascript'
     Plug 'myhere/vim-nodejs-complete'
     Plug 'moll/vim-node'
-    "Plug 'vim-scripts/javacomplete', {'for': 'java'}
-    "if IsPythonEnabled()
-    "    Plug 'artur-shaik/vim-javacomplete2', {'for': 'java'}
-    "endif
-    "Plug 'shiluotang/vim-eclim'
     if IsPython3Enabled()
         Plug 'davidhalter/jedi-vim', {'for': 'python'}
     endif
@@ -575,7 +577,6 @@ function DumpMavenClasspath()
                     \ . s:classpath_filename)
         let s:classpaths_file = s:dir . '/' . s:classpath_filename
         if filereadable(s:classpaths_file)
-            echo s:classpaths_file . ' is readable!'
             for line in readfile(s:classpaths_file, '', 1)
                 "for entry in split(line, ':')
                 "    echo entry
@@ -639,14 +640,16 @@ if PlugLoaded('coc.nvim')
 
     function! s:show_documentation()
         if (index(['vim','help'], &filetype) >= 0)
-            execute 'h '.expand('<cword>')
+            execute 'h ' . expand('<cword>')
         elseif (coc#rpc#ready())
             call CocActionAsync('doHover')
         else
             execute '!' . &keywordprg . " " . expand('<cword>')
         endif
     endfunction
-    autocmd filetype vim,javascript,java,cs,json,python setlocal tagfunc=CocTagFunc
+    if exists('&tagfunc')
+        autocmd filetype vim,javascript,java,cs,json,python setlocal tagfunc=CocTagFunc
+    endif
 endif
 
 if PlugLoaded('tagbar')
