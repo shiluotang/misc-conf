@@ -190,6 +190,9 @@ else
     "    Plug 'artur-shaik/vim-javacomplete2', {'for': 'java'}
     "endif
     "Plug 'shiluotang/vim-eclim'
+    if IsPython3Enabled()
+        Plug 'davidhalter/jedi-vim', {'for': 'python'}
+    endif
 endif
 """""""""""""""""""""""""""""
 
