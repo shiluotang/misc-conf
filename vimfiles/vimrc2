@@ -91,14 +91,33 @@ if empty(glob(expand(g:vim_plug_path)))
 endif
 
 function IsPythonEnabled()
+    let s:pyver = 0
     if version >= 800
-        return has('python3_compiled')
-                    \ || has('python3_dynamic')
-                    \ || has('python_compiled')
-                    \ || has('python_dynamic')
+        if s:pyver == 0
+            if has('python3_compiled')
+                if has('python3')
+                    let s:pyver = 3
+                endif
+            endif
+        endif
+        if s:pyver == 0
+            if has('python_compiled')
+                if has('python')
+                    let s:pyver = 2
+                endif
+            endif
+        endif
     else
-        return has('python3') || has('python')
+        if has('python3')
+            let s:pyver = 3
+        elseif has('python')
+            let s:pyver = 2
+        endif
     endif
+    return s:pyver
+endfunction
+function IsPython3Enabled()
+    return IsPythonEnabled() >= 3
 endfunction
 
 call plug#begin(expand('$HOME/.vim/plugged'))
@@ -155,6 +174,10 @@ if version >= 800
                     \   'json'
                     \   ]
                     \ }
+    else
+        if IsPython3Enabled()
+            Plug 'davidhalter/jedi-vim', {'for': 'python'}
+        endif
     endif
     Plug 'OmniSharp/omnisharp-vim', {'for': 'cs'}
 else
@@ -168,7 +191,6 @@ else
     "endif
     "Plug 'shiluotang/vim-eclim'
 endif
-Plug 'davidhalter/jedi-vim', {'for': 'python'}
 """""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""
@@ -195,9 +217,16 @@ if version > 703
     Plug 'Chiel92/vim-autoformat'
 endif
 "Plug 'adizero/vim-clang-format'
-Plug 'iamcco/mathjax-support-for-mkdp'
-if IsPythonEnabled()
-    Plug 'iamcco/markdown-preview.vim'
+if version >= 801
+    " If you don't have nodejs and yarn
+    " use pre build, add 'vim-plug' to the filetype list so vim-plug can update this plugin
+    " see: https://github.com/iamcco/markdown-preview.nvim/issues/50
+    Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+else
+    Plug 'iamcco/mathjax-support-for-mkdp'
+    if IsPythonEnabled()
+        Plug 'iamcco/markdown-preview.vim'
+    endif
 endif
 if version >= 800
     Plug 'preservim/nerdtree'
