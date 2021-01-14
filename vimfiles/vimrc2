@@ -1,7 +1,9 @@
 if has('win32')
     if expand('$lang') =~ '.*UTF-8'
     else
-        "let $LANG=expand('$lang') . '.UTF-8'
+        if version < 800
+            let $LANG=expand('$lang') . '.UTF-8'
+        endif
         set encoding=utf-8
         if version >= 802 && has('iconv')
             set makeencoding=char
@@ -140,22 +142,31 @@ Plug 'junegunn/seoul256.vim'
 if IsPythonEnabled()
     Plug 'xavierd/clang_complete'
 endif
-"Plug 'vim-scripts/javacomplete', {'for': 'java'}
-if IsPythonEnabled()
-    "Plug 'artur-shaik/vim-javacomplete2', {'for': 'java'}
-endif
-"Plug 'shiluotang/vim-eclim'
 if version >= 800
-    Plug 'neoclide/coc.nvim', {
-                \ 'branch': 'release',
-                \ 'for': ['vim', 'javascript', 'java', 'cs', 'json']
-                \ }
+    if executable('node')
+        Plug 'neoclide/coc.nvim', {
+                    \ 'branch': 'release',
+                    \ 'for': [
+                    \   'java',
+                    \   'cs',
+                    \   'python',
+                    \   'vim',
+                    \   'javascript',
+                    \   'json'
+                    \   ]
+                    \ }
+    endif
     Plug 'OmniSharp/omnisharp-vim', {'for': 'cs'}
 else
     Plug 'leafgarland/typescript-vim'
     Plug 'pangloss/vim-javascript'
     Plug 'myhere/vim-nodejs-complete'
     Plug 'moll/vim-node'
+    "Plug 'vim-scripts/javacomplete', {'for': 'java'}
+    "if IsPythonEnabled()
+    "    Plug 'artur-shaik/vim-javacomplete2', {'for': 'java'}
+    "endif
+    "Plug 'shiluotang/vim-eclim'
 endif
 """""""""""""""""""""""""""""
 
@@ -586,6 +597,7 @@ if PlugLoaded('coc.nvim')
     nmap <silent>   <Leader>gi <Plug>(coc-implementation)
     nmap <silent>   <Leader>gr <Plug>(coc-references)
     nmap <silent>   <Leader>gf :CocAction quickfix<CR>
+    nmap <silent>   <Leader>gF :CocAction<CR>
     nmap            <leader>rn <Plug>(coc-rename)
 
     " Use K to show documentation in preview window.
