@@ -163,18 +163,23 @@ if IsPythonEnabled()
     Plug 'xavierd/clang_complete'
 endif
 if version >= 800
+    "Plug 'prabirshrestha/vim-lsp'
+    "Plug 'mattn/vim-lsp-settings'
+    "Plug 'prabirshrestha/asyncomplete.vim'
+    "Plug 'prabirshrestha/asyncomplete-lsp.vim'
     if executable('node')
-        Plug 'neoclide/coc.nvim', {
-                    \ 'branch': 'release',
-                    \ 'for': [
-                    \   'java',
-                    \   'cs',
-                    \   'python',
-                    \   'vim',
-                    \   'javascript',
-                    \   'json'
-                    \   ]
-                    \ }
+        Plug 'neoclide/coc.nvim', {'branch': 'release'}
+        "Plug 'neoclide/coc.nvim', {
+        "            \ 'branch': 'release',
+        "            \ 'for': [
+        "            \   'java',
+        "            \   'cs',
+        "            \   'python',
+        "            \   'vim',
+        "            \   'javascript',
+        "            \   'json'
+        "            \   ]
+        "            \ }
     else
         if IsPython3Enabled()
             Plug 'davidhalter/jedi-vim', {'for': 'python'}
@@ -226,7 +231,7 @@ if version >= 801
     " If you don't have nodejs and yarn
     " use pre build, add 'vim-plug' to the filetype list so vim-plug can update this plugin
     " see: https://github.com/iamcco/markdown-preview.nvim/issues/50
-    Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+    Plug 'iamcco/markdown-preview.nvim', {'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 else
     Plug 'iamcco/mathjax-support-for-mkdp'
     if IsPythonEnabled()
@@ -342,25 +347,25 @@ if PlugLoaded('cscove')
     let g:cscope_auto_update = 1
     let g:cscope_silent = 1
     "Below is the minimum key mappings.
-    nnoremap <leader>fa :call CscopeFindInteractive(expand('<cword>'))<CR>
-    nnoremap <leader>lo :call ToggleLocationList()<CR>
+    nnoremap <Leader>fa :call CscopeFindInteractive(expand('<cword>'))<CR>
+    nnoremap <Leader>lo :call ToggleLocationList()<CR>
     "Some optional key mappings to search directly.
     " s: Find this C symbol
-    nnoremap  <leader>fs :call CscopeFind('s', expand('<cword>'))<CR>
+    nnoremap  <Leader>fs :call CscopeFind('s', expand('<cword>'))<CR>
     " g: Find this definition
-    nnoremap  <leader>fg :call CscopeFind('g', expand('<cword>'))<CR>
+    nnoremap  <Leader>fg :call CscopeFind('g', expand('<cword>'))<CR>
     " d: Find functions called by this function
-    nnoremap  <leader>fd :call CscopeFind('d', expand('<cword>'))<CR>
+    nnoremap  <Leader>fd :call CscopeFind('d', expand('<cword>'))<CR>
     " c: Find functions calling this function
-    nnoremap  <leader>fc :call CscopeFind('c', expand('<cword>'))<CR>
+    nnoremap  <Leader>fc :call CscopeFind('c', expand('<cword>'))<CR>
     " t: Find this text string
-    nnoremap  <leader>ft :call CscopeFind('t', expand('<cword>'))<CR>
+    nnoremap  <Leader>ft :call CscopeFind('t', expand('<cword>'))<CR>
     " e: Find this egrep pattern
-    nnoremap  <leader>fe :call CscopeFind('e', expand('<cword>'))<CR>
+    nnoremap  <Leader>fe :call CscopeFind('e', expand('<cword>'))<CR>
     " f: Find this file
-    nnoremap  <leader>ff :call CscopeFind('f', expand('<cword>'))<CR>
+    nnoremap  <Leader>ff :call CscopeFind('f', expand('<cword>'))<CR>
     " i: Find files #including this file
-    nnoremap  <leader>fi :call CscopeFind('i', expand('<cword>'))<CR>
+    nnoremap  <Leader>fi :call CscopeFind('i', expand('<cword>'))<CR>
 endif
 
 if PlugLoaded('vcscommand.vim')
@@ -626,6 +631,11 @@ if PlugLoaded('javacomplete')
 endif
 
 if PlugLoaded('coc.nvim')
+    " Use `[g` and `]g` to navigate diagnostics
+    " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+    nmap <silent> [g <Plug>(coc-diagnostic-prev)
+    nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
     " code navigation.
     nmap <silent>   <Leader>gd <Plug>(coc-definition)
     nmap <silent>   <Leader>gy <Plug>(coc-type-definition)
@@ -633,7 +643,8 @@ if PlugLoaded('coc.nvim')
     nmap <silent>   <Leader>gr <Plug>(coc-references)
     nmap <silent>   <Leader>gf :CocAction quickfix<CR>
     nmap <silent>   <Leader>gF :CocAction<CR>
-    nmap            <leader>rn <Plug>(coc-rename)
+    nmap            <Leader>rn <Plug>(coc-rename)
+    nmap <silent>   <Leader>n  :CocCommand explorer<CR>
 
     " Use K to show documentation in preview window.
     nnoremap <silent> <Leader>gk :call <SID>show_documentation()<CR>
@@ -654,6 +665,46 @@ endif
 
 if PlugLoaded('tagbar')
     nmap <F2> :TagbarToggle<CR>
+endif
+
+if PlugLoaded('vim-lsp')
+    if executable('pyls')
+        " pip install python-language-server
+        au User lsp_setup call lsp#register_server({
+            \ 'name': 'pyls',
+            \ 'cmd': {server_info->['pyls']},
+            \ 'allowlist': ['python'],
+            \ })
+    endif
+
+    function! s:on_lsp_buffer_enabled() abort
+        setlocal omnifunc=lsp#complete
+        setlocal signcolumn=yes
+        if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+        nmap <buffer> <Leader>gd <Plug>(lsp-definition)
+        nmap <buffer> <Leader>gs <Plug>(lsp-document-symbol-search)
+        nmap <buffer> <Leader>gS <Plug>(lsp-workspace-symbol-search)
+        nmap <buffer> <Leader>gr <Plug>(lsp-references)
+        nmap <buffer> <Leader>gi <Plug>(lsp-implementation)
+        nmap <buffer> <Leader>gt <Plug>(lsp-type-definition)
+        nmap <buffer> <Leader>rn <Plug>(lsp-rename)
+        nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
+        nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
+        nmap <buffer> <Leader>gk <Plug>(lsp-hover)
+        nmap <buffer> <Leader>gf :LspCodeAction<CR>
+        nmap <buffer> <Leader>gh :LspTypeHierarchy<CR>
+
+        let g:lsp_format_sync_timeout = 1000
+        autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
+
+        " refer to doc to add more commands
+    endfunction
+
+    augroup lsp_install
+        au!
+        " call s:on_lsp_buffer_enabled only for languages that has the server registered.
+        autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+    augroup END
 endif
 
 if has('multi_byte')
