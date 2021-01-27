@@ -43,7 +43,7 @@ if has('gui_running')
         "set guifont=CourierForPowerline:h12
         "set guifont=DroidSansMonoNerdFontCompleteM-:h20
         "set guifont=FuraCodeNerdFontCompleteM-Regular:h12
-        "set guifont=GoMonoForPowerline:h25
+        "set guifont=GoMonoForPowerline:h12
     endif
 endif
 if has('gui')
@@ -478,6 +478,9 @@ if PlugLoaded('vim-devicons')
     let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
     let g:webdevicons_conceal_nerdtree_brackets = 1
     let g:DevIconsEnableFoldersOpenClose = 1
+    scriptencoding utf8
+    let g:WebDevIconsUnicodeByteOrderMarkerDefaultSymbol = ''
+    scriptencoding
 endif
 
 if PlugLoaded('nerdtree-git-plugin')
