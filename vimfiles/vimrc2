@@ -39,7 +39,8 @@ if has('gui_running')
         "set guifont=Courier:h12
         set guifontwide=KaiTi:h12
         "set guifont=CousineForPowerline:h12
-        set guifont=CourierPrimeForPowerline:h12
+        "set guifont=CourierPrimeForPowerline:h12
+        set guifont=CourierPrimeNerdFontCompleteM-:h12
         "set guifont=CourierForPowerline:h12
         "set guifont=DroidSansMonoNerdFontCompleteM-:h20
         "set guifont=FuraCodeNerdFontCompleteM-Regular:h12
@@ -270,7 +271,7 @@ elseif version >= 703
     Plug 'itchyny/vim-gitbranch'
 endif
 
-"let g:nerd_font_in_terminal = 1
+let g:nerd_font_in_terminal = 1
 if !exists('g:nerd_font_in_terminal')
     let g:nerd_font_in_terminal = 0
 endif
@@ -291,6 +292,8 @@ if executable('ctags')
     Plug 'preservim/tagbar'
 endif
 "Plug 'tpope/vim-capslock'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 """""""""""""""""""""""""""""
 call plug#end()
 
@@ -721,6 +724,10 @@ if PlugLoaded('vim-lsp')
         " call s:on_lsp_buffer_enabled only for languages that has the server registered.
         autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
     augroup END
+endif
+
+if PlugLoaded('fzf.vim')
+    nmap <Leader>F :Files<CR>
 endif
 
 if has('multi_byte')
