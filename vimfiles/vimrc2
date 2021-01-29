@@ -18,12 +18,13 @@ if has('gui_running')
         "set guifont=Courier\ 10\ Pitch\ 12
         set guifontwide=AR\ PL\ UKai\ CN\ 10
         "set guifont=Courier\ 10\ Pitch\ for\ Powerline\ 12
-        "set guifont=Courier\ Prime\ for\ Powerline\ 10
+        "set guifont=Courier\ Prime\ for\ Powerline\ 12
+        set guifont=CourierPrime\ Nerd\ Font\ Mono\ 10
         "set guifont=Courier\ for\ Powerline\ 12
         "set guifont=DroidSansMono\ Nerd\ Font\ Mono\ 12
         "set guifont=Cousine\ Nerd\ Font\ Mono\ 12
         "set guifont=GoMono\ Nerd\ Font\ Mono\ 12
-        set guifont=FuraCode\ Nerd\ Font\ Mono\ Medium\ 10
+        "set guifont=FuraCode\ Nerd\ Font\ Mono\ Medium\ 12
     elseif has('x11')
         set guifont=*-lucidatypewriter-medium-r-normal-*-*-180-*-*-m-*-*
     elseif has('gui_win32')
