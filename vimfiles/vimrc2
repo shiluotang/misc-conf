@@ -184,6 +184,7 @@ if version >= 800
     "Plug 'prabirshrestha/asyncomplete.vim'
     "Plug 'prabirshrestha/asyncomplete-lsp.vim'
     if executable('node')
+        "let g:coc_disable_startup_warning = 1
         Plug 'neoclide/coc.nvim', {'branch': 'release'}
         "Plug 'neoclide/coc.nvim', {
         "            \ 'branch': 'release',
@@ -429,7 +430,12 @@ if PlugLoaded('clang_complete')
                     execute 'set pythonthreehome=' . s:candidate
                 endif
             endif
-        en
+        endif
+    elseif has('unix')
+        let g:clang_library_path = '/usr/lib/llvm-7/lib'
+        if !filereadable(g:clang_library_path . '/libclang.so')
+            unlet g:clang_library_path
+        endif
     endif
 endif
 
@@ -679,7 +685,12 @@ if PlugLoaded('coc.nvim')
         endif
     endfunction
     if exists('&tagfunc')
-        autocmd filetype vim,javascript,java,cs,json,python setlocal tagfunc=CocTagFunc
+        autocmd filetype vim,javascript,java,cpp,cs,json,python setlocal tagfunc=CocTagFunc
+    else
+        autocmd filetype vim,javascript,java,cs,json,python
+                    \ nnoremap <buffer> <silent> <C-]> <Leader>gd
+        autocmd filetype vim,javascript,java,cs,json,python
+                    \ nnoremap <buffer> <silent> <C-T> <C-O>
     endif
 endif
 
