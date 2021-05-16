@@ -170,16 +170,19 @@ Plug 'rakr/vim-one'
 Plug 'ghifarit53/tokyonight-vim'
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'junegunn/seoul256.vim'
+Plug 'arcticicestudio/nord-vim'
+Plug 'ayu-theme/ayu-vim'
 """""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""
 "intellisense
 """""""""""""""""""""""""""""
-if IsPythonEnabled()
-    Plug 'xavierd/clang_complete'
-endif
+Plug 'rust-lang/rust.vim'
+Plug 'fatih/vim-go'
 if version >= 800
+    "Plug 'Shougo/deoplete.nvim'
     "Plug 'prabirshrestha/vim-lsp'
+    "Plug 'lighttiger2505/deoplete-vim-lsp'
     "Plug 'mattn/vim-lsp-settings'
     "Plug 'prabirshrestha/asyncomplete.vim'
     "Plug 'prabirshrestha/asyncomplete-lsp.vim'
@@ -201,6 +204,9 @@ if version >= 800
         if IsPython3Enabled()
             Plug 'davidhalter/jedi-vim', {'for': 'python'}
         endif
+        if IsPythonEnabled()
+            Plug 'xavierd/clang_complete'
+        endif
     endif
     Plug 'OmniSharp/omnisharp-vim', {'for': 'cs'}
 else
@@ -218,6 +224,14 @@ else
         Plug 'davidhalter/jedi-vim', {'for': 'python'}
     endif
 endif
+"if has('nvim')
+"  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"else
+"  Plug 'Shougo/deoplete.nvim'
+"  Plug 'roxma/nvim-yarp'
+"  Plug 'roxma/vim-hug-neovim-rpc'
+"endif
+"let g:deoplete#enable_at_startup = 1
 """""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""
@@ -470,11 +484,13 @@ let g:molokai_original = 1
 if has('gui_running')
     "set background=dark
     "colorscheme solarized
-    colorscheme base16-github
+    "colorscheme base16-github
     "colorscheme paintbox
     "colorscheme kalisi
+    "colorscheme macvim
+    colorscheme nord
 else
-    colorscheme seoul256
+    colorscheme seoul256-light
 endif
 
 if PlugLoaded('vim-devicons')
@@ -662,6 +678,7 @@ if PlugLoaded('coc.nvim')
     nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
     " code navigation.
+    nmap <silent>   <Leader>gl <Plug>(coc-codelens-action)
     nmap <silent>   <Leader>gd <Plug>(coc-definition)
     nmap <silent>   <Leader>gy <Plug>(coc-type-definition)
     nmap <silent>   <Leader>gi <Plug>(coc-implementation)
@@ -685,12 +702,7 @@ if PlugLoaded('coc.nvim')
         endif
     endfunction
     if exists('&tagfunc')
-        autocmd filetype vim,javascript,java,cpp,cs,json,python setlocal tagfunc=CocTagFunc
-    else
-        autocmd filetype vim,javascript,java,cs,json,python
-                    \ nnoremap <buffer> <silent> <C-]> <Leader>gd
-        autocmd filetype vim,javascript,java,cs,json,python
-                    \ nnoremap <buffer> <silent> <C-T> <C-O>
+        autocmd filetype vim,javascript,java,c,cpp,cs,json,python,sh,cmake setlocal tagfunc=CocTagFunc
     endif
 endif
 
@@ -707,8 +719,10 @@ if PlugLoaded('vim-lsp')
             \ 'allowlist': ['python'],
             \ })
     endif
+    let g:lsp_async_completion = 1
 
     function! s:on_lsp_buffer_enabled() abort
+        "autocmd filetype typescript,java
         setlocal omnifunc=lsp#complete
         setlocal signcolumn=yes
         if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
