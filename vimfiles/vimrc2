@@ -64,6 +64,21 @@ if has('gui')
     set guioptions-=b
     set guioptions-=h
 endif
+if has('diff')
+            \ && &diffopt =~ 'internal'
+            \ && &diffopt !~ 'algorithm'
+    let s:diff_algos = [
+                \ 'algorithm:patience',
+                \ 'algorithm:histogram'
+                \ ]
+    for s:diff_algo in s:diff_algos
+        try
+            execute 'set diffopt+=' . s:diff_algo
+    break
+    catch
+        endtry
+    endfor
+endif
 
 let g:vim_plug_path_prefix = &rtp[0 : stridx(&rtp, ",") - 1]
 let g:vim_plug_path = g:vim_plug_path_prefix . "/autoload/plug.vim"
