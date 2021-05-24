@@ -461,10 +461,19 @@ if PlugLoaded('clang_complete')
             endif
         endif
     elseif has('unix')
-        let g:clang_library_path = '/usr/lib/llvm-7/lib'
-        if !filereadable(g:clang_library_path . '/libclang.so')
-            unlet g:clang_library_path
-        endif
+        let s:clang_library_paths = [
+                    \ '/usr/lib/llvm-10/lib',
+                    \ '/usr/lib/llvm-9/lib',
+                    \ '/usr/lib/llvm-8/lib',
+                    \ '/usr/lib/llvm-7/lib'
+                    \ ]
+        for s:clang_library_path in s:clang_library_paths
+            if filereadable(s:clang_library_path . '/libclang.so')
+                let g:clang_library_path=s:clang_library_path
+                unlet s:clang_library_path
+                break
+            endif
+        endfor
     endif
 endif
 
