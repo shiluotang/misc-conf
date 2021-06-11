@@ -46,6 +46,7 @@ if has('gui_running')
         "set guifont=DroidSansMonoNerdFontCompleteM-:h20
         "set guifont=FuraCodeNerdFontCompleteM-Regular:h12
         "set guifont=GoMonoForPowerline:h12
+        "set guifont=CodeNewRomanNerdFontCompleteM-:h12
     endif
 endif
 if has('gui')
@@ -322,6 +323,7 @@ Plug 'thinca/vim-fontzoom'
 if executable('ctags')
     Plug 'preservim/tagbar'
 endif
+Plug 'liuchengxu/vista.vim'
 "Plug 'tpope/vim-capslock'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
@@ -347,6 +349,7 @@ if PlugLoaded('nerdtree')
         endif
     endif
     map <C-n> :NERDTreeToggle<CR>
+    let NERDTreeRespectWildIgnore = 1
 else
     let g:netrw_banner = 0
     let g:netrw_liststyle = 3
@@ -528,6 +531,9 @@ if PlugLoaded('vim-devicons')
     let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
     let g:webdevicons_conceal_nerdtree_brackets = 1
     let g:DevIconsEnableFoldersOpenClose = 1
+    if has('macunix')
+        let g:WebDevIconsOS = 'Darwin'
+    endif
     scriptencoding utf8
     let g:WebDevIconsUnicodeByteOrderMarkerDefaultSymbol = ''
     scriptencoding
@@ -715,6 +721,9 @@ if PlugLoaded('coc.nvim')
 
     " Use K to show documentation in preview window.
     nnoremap <silent> <Leader>gk :call <SID>show_documentation()<CR>
+    if &completefunc =~ ""
+        inoremap <silent><expr> <C-x><C-u> coc#refresh()
+    endif
 
     function! s:show_documentation()
         if (index(['vim','help'], &filetype) >= 0)
@@ -731,7 +740,29 @@ if PlugLoaded('coc.nvim')
 endif
 
 if PlugLoaded('tagbar')
-    nmap <F2> :TagbarToggle<CR>
+    nmap <Leader>t :TagbarToggle<CR>
+endif
+
+if PlugLoaded('vista.vim')
+    let g:vista_sidebar_width = 50
+    map <Leader>vv :Vista!!<CR>
+    map <Leader>vf :Vista finder fzf:coc<CR>
+    let g:vista#renderer#icons = {
+                \ 'constructor': "\u2295",
+                \ 'package': "\uf487",
+                \ 'packages': "\uf487",
+                \ 'method': "\uf794",
+                \ }
+    scriptencoding utf8
+    let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
+    scriptencoding
+    " Ensure you have installed some decent font to show these pretty symbols,
+    " then you can enable icon for the kind.
+    let g:vista#renderer#enable_icon = 1
+
+    if PlugLoaded('coc.nvim')
+        let g:vista_default_executive = 'coc'
+    endif
 endif
 
 if PlugLoaded('vim-lsp')
