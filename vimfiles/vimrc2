@@ -279,7 +279,7 @@ if version >= 801
     " If you don't have nodejs and yarn
     " use pre build, add 'vim-plug' to the filetype list so vim-plug can update this plugin
     " see: https://github.com/iamcco/markdown-preview.nvim/issues/50
-    Plug 'iamcco/markdown-preview.nvim', {'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+    Plug 'iamcco/markdown-preview.nvim', {'do': ':call mkdp#util#install()', 'for': ['markdown', 'vim-plug']}
 else
     Plug 'iamcco/mathjax-support-for-mkdp'
     if IsPythonEnabled()
@@ -326,7 +326,7 @@ if executable('ctags')
 endif
 Plug 'liuchengxu/vista.vim'
 "Plug 'tpope/vim-capslock'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf', { 'do': ':call fzf#install()' }
 Plug 'junegunn/fzf.vim'
 """""""""""""""""""""""""""""
 call plug#end()
