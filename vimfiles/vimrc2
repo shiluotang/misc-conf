@@ -195,7 +195,7 @@ Plug 'ayu-theme/ayu-vim'
 "intellisense
 """""""""""""""""""""""""""""
 Plug 'rust-lang/rust.vim'
-Plug 'fatih/vim-go'
+Plug 'fatih/vim-go', {'tag': '*'}
 if version >= 800
     "Plug 'Shougo/deoplete.nvim'
     "Plug 'prabirshrestha/vim-lsp'
@@ -275,6 +275,8 @@ if version > 703
     Plug 'Chiel92/vim-autoformat'
 endif
 "Plug 'adizero/vim-clang-format'
+Plug 'godlygeek/tabular'
+Plug 'junegunn/vim-easy-align'
 if version >= 801
     " If you don't have nodejs and yarn
     " use pre build, add 'vim-plug' to the filetype list so vim-plug can update this plugin
@@ -326,8 +328,12 @@ if executable('ctags')
 endif
 Plug 'liuchengxu/vista.vim'
 "Plug 'tpope/vim-capslock'
+Plug 'tpope/vim-dadbod'
+Plug 'kristijanhusak/vim-dadbod-ui'
 Plug 'junegunn/fzf', { 'do': ':call fzf#install()' }
 Plug 'junegunn/fzf.vim'
+Plug 'xolox/vim-misc'
+Plug 'xolox/vim-colorscheme-switcher'
 """""""""""""""""""""""""""""
 call plug#end()
 
@@ -350,6 +356,7 @@ if PlugLoaded('nerdtree')
         endif
     endif
     map <C-n> :NERDTreeToggle<CR>
+    map <C-m> :NERDTreeFind<CR>
     let NERDTreeRespectWildIgnore = 1
 else
     let g:netrw_banner = 0
@@ -815,6 +822,11 @@ endif
 
 if PlugLoaded('fzf.vim')
     nmap <Leader>F :Files<CR>
+endif
+
+if PlugLoaded('vim-easy-align')
+    xmap <Leader>ea <Plug>(EasyAlign)
+    nmap <Leader>ea <Plug>(EasyAlign)
 endif
 
 if has('multi_byte')
