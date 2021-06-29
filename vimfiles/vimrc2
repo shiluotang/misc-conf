@@ -10,9 +10,13 @@ if has('win32')
         endif
     endif
 endif
-source $VIMRUNTIME/vimrc_example.vim
+if filereadable(expand('$VIMRUNTIME/vimrc_example.vim'))
+    source $VIMRUNTIME/vimrc_example.vim
+endif
 if has('gui_running')
-    source $VIMRUNTIME/gvimrc_example.vim
+    if filereadable(expand('$VIMRUNTIME/gvimrc_example.vim'))
+        source $VIMRUNTIME/gvimrc_example.vim
+    endif
     set cmdheight=1
     if has('gui_gtk')
         "set guifont=Courier\ 10\ Pitch\ 12
@@ -177,8 +181,8 @@ endif
 "colorschemes
 """""""""""""""""""""""""""""
 Plug 'vim-scripts/Colour-Sampler-Pack'
-Plug 'altercation/vim-colors-solarized'
 "Plug 'flazz/vim-colorschemes'
+Plug 'rainglow/vim', {'as': 'rainglow-vim-colorschemes'}
 Plug 'joshdick/onedark.vim'
 Plug 'dracula/vim', {'as': 'dracula.vim'}
 Plug 'chriskempson/base16-vim'
@@ -189,13 +193,15 @@ Plug 'NLKNguyen/papercolor-theme'
 Plug 'junegunn/seoul256.vim'
 Plug 'arcticicestudio/nord-vim'
 Plug 'ayu-theme/ayu-vim'
+Plug 'altercation/vim-colors-solarized'
+Plug 'lifepillar/vim-solarized8'
 """""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""
 "intellisense
 """""""""""""""""""""""""""""
 Plug 'rust-lang/rust.vim'
-Plug 'fatih/vim-go', {'tag': '*'}
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 if version >= 800
     "Plug 'Shougo/deoplete.nvim'
     "Plug 'prabirshrestha/vim-lsp'
@@ -334,6 +340,7 @@ Plug 'junegunn/fzf', { 'do': ':call fzf#install()' }
 Plug 'junegunn/fzf.vim'
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-colorscheme-switcher'
+Plug 'dgileadi/vscode-java-decompiler'
 """""""""""""""""""""""""""""
 call plug#end()
 
@@ -356,7 +363,6 @@ if PlugLoaded('nerdtree')
         endif
     endif
     map <C-n> :NERDTreeToggle<CR>
-    map <C-m> :NERDTreeFind<CR>
     let NERDTreeRespectWildIgnore = 1
 else
     let g:netrw_banner = 0
