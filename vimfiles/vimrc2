@@ -201,17 +201,20 @@ Plug 'lifepillar/vim-solarized8'
 "intellisense
 """""""""""""""""""""""""""""
 Plug 'rust-lang/rust.vim'
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 if version >= 800
-    "Plug 'Shougo/deoplete.nvim'
     "Plug 'prabirshrestha/vim-lsp'
-    "Plug 'lighttiger2505/deoplete-vim-lsp'
     "Plug 'mattn/vim-lsp-settings'
-    "Plug 'prabirshrestha/asyncomplete.vim'
-    "Plug 'prabirshrestha/asyncomplete-lsp.vim'
+    "if exists('g:deoplete_with_vim_lsp')
+    "    Plug 'Shougo/deoplete.nvim'
+    "    Plug 'lighttiger2505/deoplete-vim-lsp'
+    "else
+    "    Plug 'prabirshrestha/asyncomplete.vim'
+    "    Plug 'prabirshrestha/asyncomplete-lsp.vim'
+    "endif
     if executable('node')
         "let g:coc_disable_startup_warning = 1
-        Plug 'neoclide/coc.nvim', {'branch': 'release'}
+        Plug 'dense-analysis/ale'
+        "Plug 'neoclide/coc.nvim', {'branch': 'release'}
         "Plug 'neoclide/coc.nvim', {
         "            \ 'branch': 'release',
         "            \ 'for': [
@@ -332,15 +335,11 @@ Plug 'thinca/vim-fontzoom'
 if executable('ctags')
     Plug 'preservim/tagbar'
 endif
-Plug 'liuchengxu/vista.vim'
 "Plug 'tpope/vim-capslock'
-Plug 'tpope/vim-dadbod'
-Plug 'kristijanhusak/vim-dadbod-ui'
 Plug 'junegunn/fzf', { 'do': ':call fzf#install()' }
 Plug 'junegunn/fzf.vim'
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-colorscheme-switcher'
-Plug 'dgileadi/vscode-java-decompiler'
 """""""""""""""""""""""""""""
 call plug#end()
 
@@ -411,7 +410,7 @@ if PlugLoaded('cscove')
     let g:cscope_auto_update = 1
     let g:cscope_silent = 1
     "Below is the minimum key mappings.
-    nnoremap <Leader>fa :call CscopeFindInteractive(expand('<cword>'))<CR>
+    nnoremap <Leader>fx :call CscopeFindInteractive(expand('<cword>'))<CR>
     nnoremap <Leader>lo :call ToggleLocationList()<CR>
     "Some optional key mappings to search directly.
     " s: Find this C symbol
@@ -430,6 +429,8 @@ if PlugLoaded('cscove')
     nnoremap  <Leader>ff :call CscopeFind('f', expand('<cword>'))<CR>
     " i: Find files #including this file
     nnoremap  <Leader>fi :call CscopeFind('i', expand('<cword>'))<CR>
+    " a: Find this C symbol assigned
+    nnoremap  <Leader>fa :call CscopeFind('a', expand('<cword>'))<CR>
 endif
 
 if PlugLoaded('vcscommand.vim')
@@ -727,11 +728,12 @@ if PlugLoaded('coc.nvim')
     nmap <silent>   <Leader>gy <Plug>(coc-type-definition)
     nmap <silent>   <Leader>gi <Plug>(coc-implementation)
     nmap <silent>   <Leader>gr <Plug>(coc-references)
-    nmap <silent>   <Leader>gff <Plug>(coc-format)
-    nmap <silent>   <Leader>gf :CocAction quickfix<CR>
-    nmap <silent>   <Leader>gF :CocAction<CR>
+    nmap <silent>   <Leader>gG <Plug>(coc-format)
+    nmap <silent>   <Leader>gf <Plug>(coc-fix-current)
+    nmap <silent>   <Leader>gF <Plug>(coc-codeaction)
     nmap            <Leader>rn <Plug>(coc-rename)
     nmap <silent>   <Leader>n  :CocCommand explorer<CR>
+    nmap <silent>   <Leader>gD :CocDiagnostics<CR>
 
     " Use K to show documentation in preview window.
     nnoremap <silent> <Leader>gk :call <SID>show_documentation()<CR>
@@ -748,6 +750,16 @@ if PlugLoaded('coc.nvim')
             execute '!' . &keywordprg . " " . expand('<cword>')
         endif
     endfunction
+
+    if has('nvim-0.4.0') || has('patch-8.2.0750')
+        nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+        nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+        inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+        inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+        vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+        vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+    endif
+
     if exists('&tagfunc')
         autocmd filetype vim,javascript,java,c,cpp,cs,json,python,sh,cmake setlocal tagfunc=CocTagFunc
     else
@@ -794,11 +806,18 @@ if PlugLoaded('vim-lsp')
             \ })
     endif
     let g:lsp_async_completion = 1
+    let g:lsp_document_highlight_enabled = 0
 
     function! s:on_lsp_buffer_enabled() abort
         "autocmd filetype typescript,java
         setlocal omnifunc=lsp#complete
         setlocal signcolumn=yes
+
+        ""fold
+        "setlocal foldmethod=expr
+        "setlocal foldexpr=lsp#ui#vim#folding#foldexpr()
+        "setlocal foldtext=lsp#ui#vim#folding#foldtext()
+
         if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
         nmap <buffer> <Leader>gd <Plug>(lsp-definition)
         nmap <buffer> <Leader>gs <Plug>(lsp-document-symbol-search)
@@ -812,6 +831,11 @@ if PlugLoaded('vim-lsp')
         nmap <buffer> <Leader>gk <Plug>(lsp-hover)
         nmap <buffer> <Leader>gf :LspCodeAction<CR>
         nmap <buffer> <Leader>gh :LspTypeHierarchy<CR>
+
+        nnoremap <buffer><expr> <C-f> lsp#scroll(+4)
+        nnoremap <buffer><expr> <C-d> lsp#scroll(-4)
+        inoremap <buffer><expr> <C-f> lsp#scroll(+4)
+        inoremap <buffer><expr> <C-d> lsp#scroll(-4)
 
         let g:lsp_format_sync_timeout = 1000
         autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
