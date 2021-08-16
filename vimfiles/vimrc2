@@ -87,7 +87,10 @@ endif
 
 let g:vim_plug_path_prefix = &rtp[0 : stridx(&rtp, ",") - 1]
 let g:vim_plug_path = g:vim_plug_path_prefix . "/autoload/plug.vim"
+"let g:plug_home =
 let g:plug_threads = 1
+let g:plug_retries = 1
+let g:plug_timeout = 3
 
 if empty(glob(expand(g:vim_plug_path)))
     if executable('curl')
@@ -807,6 +810,8 @@ if PlugLoaded('vim-lsp')
     endif
     let g:lsp_async_completion = 1
     let g:lsp_document_highlight_enabled = 0
+    let g:lsp_document_code_actions_signs_enabled = 0
+    let g:lsp_log_file = expand('~/.vim/vim-lsp.log')
 
     function! s:on_lsp_buffer_enabled() abort
         "autocmd filetype typescript,java
@@ -826,11 +831,12 @@ if PlugLoaded('vim-lsp')
         nmap <buffer> <Leader>gi <Plug>(lsp-implementation)
         nmap <buffer> <Leader>gt <Plug>(lsp-type-definition)
         nmap <buffer> <Leader>rn <Plug>(lsp-rename)
-        nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
-        nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
+        nmap <buffer> [g         <Plug>(lsp-previous-diagnostic)
+        nmap <buffer> ]g         <Plug>(lsp-next-diagnostic)
         nmap <buffer> <Leader>gk <Plug>(lsp-hover)
-        nmap <buffer> <Leader>gf :LspCodeAction<CR>
-        nmap <buffer> <Leader>gh :LspTypeHierarchy<CR>
+        nmap <buffer> <Leader>gf <Plug>(lsp-code-action)
+        nmap <buffer> <Leader>gh <Plug>(lsp-type-hierarchy)
+        nmap <silent> <Leader>gD <Plug>(lsp-document-diagnostics)
 
         nnoremap <buffer><expr> <C-f> lsp#scroll(+4)
         nnoremap <buffer><expr> <C-d> lsp#scroll(-4)
