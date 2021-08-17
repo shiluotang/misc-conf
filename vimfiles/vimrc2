@@ -269,7 +269,7 @@ endif
 "if exists('*getcurpos')
 "    Plug 'sheerun/vim-polyglot'
 "endif
-Plug 'vim-scripts/aspvbs.vim'
+"Plug 'vim-scripts/aspvbs.vim'
 Plug 'posva/vim-vue'
 Plug 'mustache/vim-mustache-handlebars'
 Plug 'vim-latex/vim-latex'
@@ -812,6 +812,11 @@ if PlugLoaded('vim-lsp')
     let g:lsp_document_highlight_enabled = 0
     let g:lsp_document_code_actions_signs_enabled = 0
     let g:lsp_log_file = expand('~/.vim/vim-lsp.log')
+    " signs
+    let g:lsp_diagnostics_signs_error = {'text': '✘'}
+    let g:lsp_diagnostics_signs_warning = {'text': '⚠'}
+    let g:lsp_diagnostics_signs_information = {'text': ''}
+    let g:lsp_diagnostics_signs_hint = {'text': '➤'}
 
     function! s:on_lsp_buffer_enabled() abort
         "autocmd filetype typescript,java
@@ -836,7 +841,7 @@ if PlugLoaded('vim-lsp')
         nmap <buffer> <Leader>gk <Plug>(lsp-hover)
         nmap <buffer> <Leader>gf <Plug>(lsp-code-action)
         nmap <buffer> <Leader>gh <Plug>(lsp-type-hierarchy)
-        nmap <silent> <Leader>gD <Plug>(lsp-document-diagnostics)
+        nmap <buffer> <Leader>gD <Plug>(lsp-document-diagnostics)
 
         nnoremap <buffer><expr> <C-f> lsp#scroll(+4)
         nnoremap <buffer><expr> <C-d> lsp#scroll(-4)
@@ -853,7 +858,7 @@ if PlugLoaded('vim-lsp')
         au!
         " call s:on_lsp_buffer_enabled only for languages that has the server registered.
         autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-    augroup END
+    augroup end
 endif
 
 if PlugLoaded('fzf.vim')
