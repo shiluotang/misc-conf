@@ -216,8 +216,7 @@ if version >= 800
     "endif
     if executable('node')
         "let g:coc_disable_startup_warning = 1
-        Plug 'dense-analysis/ale'
-        "Plug 'neoclide/coc.nvim', {'branch': 'release'}
+        Plug 'neoclide/coc.nvim', {'branch': 'release'}
         "Plug 'neoclide/coc.nvim', {
         "            \ 'branch': 'release',
         "            \ 'for': [
@@ -365,6 +364,7 @@ if PlugLoaded('nerdtree')
         endif
     endif
     map <C-n> :NERDTreeToggle<CR>
+    "map <C-m> :NERDTreeFind<CR>
     let NERDTreeRespectWildIgnore = 1
 else
     let g:netrw_banner = 0
@@ -828,7 +828,9 @@ if PlugLoaded('vim-lsp')
         "setlocal foldexpr=lsp#ui#vim#folding#foldexpr()
         "setlocal foldtext=lsp#ui#vim#folding#foldtext()
 
-        if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+        if exists('+tagfunc')
+            setlocal tagfunc=lsp#tagfunc
+        endif
         nmap <buffer> <Leader>gd <Plug>(lsp-definition)
         nmap <buffer> <Leader>gs <Plug>(lsp-document-symbol-search)
         nmap <buffer> <Leader>gS <Plug>(lsp-workspace-symbol-search)
@@ -858,7 +860,7 @@ if PlugLoaded('vim-lsp')
         au!
         " call s:on_lsp_buffer_enabled only for languages that has the server registered.
         autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-    augroup end
+    augroup END
 endif
 
 if PlugLoaded('fzf.vim')
