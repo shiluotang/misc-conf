@@ -207,6 +207,7 @@ Plug 'rust-lang/rust.vim'
 if version >= 800
     "Plug 'prabirshrestha/vim-lsp'
     "Plug 'mattn/vim-lsp-settings'
+    ""let g:deoplete_with_vim_lsp = 1
     "if exists('g:deoplete_with_vim_lsp')
     "    Plug 'Shougo/deoplete.nvim'
     "    Plug 'lighttiger2505/deoplete-vim-lsp'
@@ -214,20 +215,34 @@ if version >= 800
     "    Plug 'prabirshrestha/asyncomplete.vim'
     "    Plug 'prabirshrestha/asyncomplete-lsp.vim'
     "endif
+
+    "Plug 'autozimu/LanguageClient-neovim', {
+    "            \ 'branch': 'next',
+    "            \ 'do': 'bash install.sh',
+    "            \ }
     if executable('node')
-        "let g:coc_disable_startup_warning = 1
-        Plug 'neoclide/coc.nvim', {'branch': 'release'}
-        "Plug 'neoclide/coc.nvim', {
-        "            \ 'branch': 'release',
-        "            \ 'for': [
-        "            \   'java',
-        "            \   'cs',
-        "            \   'python',
-        "            \   'vim',
-        "            \   'javascript',
-        "            \   'json'
-        "            \   ]
-        "            \ }
+        let g:coc_load_on_filetypes = 0
+        if !exists('g:coc_load_on_filetypes')
+            let g:coc_load_on_filetypes = 0
+        endif
+        let g:coc_disable_startup_warning = 1
+        if g:coc_load_on_filetypes
+            Plug 'neoclide/coc.nvim', {
+                        \ 'branch': 'release',
+                        \ 'for': [
+                        \   'c',
+                        \   'cpp',
+                        \   'java',
+                        \   'cs',
+                        \   'python',
+                        \   'vim',
+                        \   'javascript',
+                        \   'json'
+                        \   ]
+                        \ }
+        else
+            Plug 'neoclide/coc.nvim', {'branch': 'release'}
+        endif
     else
         if IsPython3Enabled()
             Plug 'davidhalter/jedi-vim', {'for': 'python'}
@@ -384,9 +399,10 @@ if PlugLoaded('vim-airline')
     endif
     let g:airline#extensions#tabline#enabled = 1
     let g:airline#extensions#searchcount#enabled = 0
-    if PlugLoaded('coc.nvim')
-        let g:airline#extensions#coc#enabled = 1
-    endif
+    "" This is useless, airline won't load coc extension
+    "if PlugLoaded('coc.nvim')
+    "    let g:airline#extensions#coc#enabled = 1
+    "endif
     if PlugLoaded('capslock')
         let g:airline#extensions#capslock#enabled = 1
     endif
@@ -764,17 +780,18 @@ if PlugLoaded('coc.nvim')
     endif
 
     if exists('&tagfunc')
-        autocmd filetype vim,javascript,java,c,cpp,cs,json,python,sh,cmake setlocal tagfunc=CocTagFunc
+        autocmd filetype vim,typescript,javascript,java,c,cpp,cs,json,python,sh,cmake setlocal tagfunc=CocTagFunc
     else
-        autocmd filetype vim,javascript,java,c,cpp,cs,json,python,sh,cmake
+        autocmd filetype vim,typescript,javascript,java,c,cpp,cs,json,python,sh,cmake
                     \ nnoremap <buffer> <silent> <C-]> <Leader>gd
-        autocmd filetype vim,javascript,java,c,cpp,cs,json,python,sh,cmake
+        autocmd filetype vim,typescript,javascript,java,c,cpp,cs,json,python,sh,cmake
                     \ nnoremap <buffer> <silent> <C-T> <C-O>
     endif
 endif
 
 if PlugLoaded('tagbar')
     nmap <Leader>t :TagbarToggle<CR>
+    let g:tagbar_iconchars = ['▸', '▾']
 endif
 
 if PlugLoaded('vista.vim')
@@ -810,7 +827,7 @@ if PlugLoaded('vim-lsp')
     endif
     let g:lsp_async_completion = 1
     let g:lsp_document_highlight_enabled = 0
-    let g:lsp_document_code_actions_signs_enabled = 0
+    let g:lsp_document_code_action_signs_enabled = 0
     let g:lsp_log_file = expand('~/.vim/vim-lsp.log')
     " signs
     let g:lsp_diagnostics_signs_error = {'text': '✘'}
@@ -861,6 +878,15 @@ if PlugLoaded('vim-lsp')
         " call s:on_lsp_buffer_enabled only for languages that has the server registered.
         autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
     augroup END
+endif
+
+if PlugLoaded('LanguageClient-neovim')
+    " note that if you are using Plug mapping you should not use `noremap` mappings.
+    nmap <buffer> <Leader>gf    <Plug>(lcn-menu)
+    " Or map each action separately
+    nmap <silent> <Leader>gk    <Plug>(lcn-hover)
+    nmap <silent> <Leader>gd    <Plug>(lcn-definition)
+    nmap <silent> <Leader>rn    <Plug>(lcn-rename)
 endif
 
 if PlugLoaded('fzf.vim')
