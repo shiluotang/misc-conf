@@ -205,43 +205,46 @@ Plug 'lifepillar/vim-solarized8'
 """""""""""""""""""""""""""""
 Plug 'rust-lang/rust.vim'
 if version >= 800
-    "Plug 'prabirshrestha/vim-lsp'
-    "Plug 'mattn/vim-lsp-settings'
-    ""let g:deoplete_with_vim_lsp = 1
-    "if exists('g:deoplete_with_vim_lsp')
-    "    Plug 'Shougo/deoplete.nvim'
-    "    Plug 'lighttiger2505/deoplete-vim-lsp'
-    "else
-    "    Plug 'prabirshrestha/asyncomplete.vim'
-    "    Plug 'prabirshrestha/asyncomplete-lsp.vim'
-    "endif
+    " coc.nvim, LanguageClient-neovim, vim-lsp
+    let g:lsp_vendor = 'coc.nvim'
 
-    "Plug 'autozimu/LanguageClient-neovim', {
-    "            \ 'branch': 'next',
-    "            \ 'do': 'bash install.sh',
-    "            \ }
-    if executable('node')
-        let g:coc_load_on_filetypes = 0
-        if !exists('g:coc_load_on_filetypes')
-            let g:coc_load_on_filetypes = 0
-        endif
-        let g:coc_disable_startup_warning = 1
-        if g:coc_load_on_filetypes
-            Plug 'neoclide/coc.nvim', {
-                        \ 'branch': 'release',
-                        \ 'for': [
-                        \   'c',
-                        \   'cpp',
-                        \   'java',
-                        \   'cs',
-                        \   'python',
-                        \   'vim',
-                        \   'javascript',
-                        \   'json'
-                        \   ]
+    if exists('g:lsp_vendor')
+        if g:lsp_vendor == 'vim-lsp'
+            Plug 'prabirshrestha/vim-lsp'
+            Plug 'mattn/vim-lsp-settings'
+            let g:deoplete_with_vim_lsp = 1
+            if g:deoplete_with_vim_lsp == 1
+                Plug 'Shougo/deoplete.nvim'
+                Plug 'lighttiger2505/deoplete-vim-lsp'
+            else
+                Plug 'prabirshrestha/asyncomplete.vim'
+                Plug 'prabirshrestha/asyncomplete-lsp.vim'
+            endif
+        elseif g:lsp_vendor == 'LanguageClient-neovim'
+            Plug 'autozimu/LanguageClient-neovim', {
+                        \ 'branch': 'next',
+                        \ 'do': 'bash install.sh',
                         \ }
-        else
-            Plug 'neoclide/coc.nvim', {'branch': 'release'}
+        elseif g:lsp_vendor == 'coc.nvim'
+            let g:coc_load_on_filetypes = 0
+            let g:coc_disable_startup_warning = 1
+            if g:coc_load_on_filetypes
+                Plug 'neoclide/coc.nvim', {
+                            \ 'branch': 'release',
+                            \ 'for': [
+                            \   'c',
+                            \   'cpp',
+                            \   'java',
+                            \   'cs',
+                            \   'python',
+                            \   'vim',
+                            \   'javascript',
+                            \   'json'
+                            \   ]
+                            \ }
+            else
+                Plug 'neoclide/coc.nvim', {'branch': 'release'}
+            endif
         endif
     else
         if IsPython3Enabled()
@@ -267,14 +270,6 @@ else
         Plug 'davidhalter/jedi-vim', {'for': 'python'}
     endif
 endif
-"if has('nvim')
-"  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-"else
-"  Plug 'Shougo/deoplete.nvim'
-"  Plug 'roxma/nvim-yarp'
-"  Plug 'roxma/vim-hug-neovim-rpc'
-"endif
-"let g:deoplete#enable_at_startup = 1
 """""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""
@@ -303,7 +298,7 @@ endif
 "Plug 'adizero/vim-clang-format'
 Plug 'godlygeek/tabular'
 Plug 'junegunn/vim-easy-align'
-if version >= 801
+if version >= 801 || has('nvim')
     " If you don't have nodejs and yarn
     " use pre build, add 'vim-plug' to the filetype list so vim-plug can update this plugin
     " see: https://github.com/iamcco/markdown-preview.nvim/issues/50
@@ -736,6 +731,20 @@ if PlugLoaded('javacomplete')
 endif
 
 if PlugLoaded('coc.nvim')
+    " TextEdit might fail if hidden is not set.
+    set hidden
+
+    " Some servers have issues with backup files, see #649.
+    set nobackup
+    set nowritebackup
+
+    " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+    " delays and poor user experience.
+    set updatetime=300
+
+    " Don't pass messages to |ins-completion-menu|.
+    set shortmess+=c
+
     " Use `[g` and `]g` to navigate diagnostics
     " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
     nmap <silent> [g <Plug>(coc-diagnostic-prev)
@@ -749,6 +758,7 @@ if PlugLoaded('coc.nvim')
     nmap <silent>   <Leader>gr <Plug>(coc-references)
     nmap <silent>   <Leader>gG <Plug>(coc-format)
     nmap <silent>   <Leader>gf <Plug>(coc-fix-current)
+    nmap <silent>   <Leader>ga <Plug>(coc-codeaction-selected)
     nmap <silent>   <Leader>gF <Plug>(coc-codeaction)
     nmap            <Leader>rn <Plug>(coc-rename)
     nmap <silent>   <Leader>n  :CocCommand explorer<CR>
@@ -769,6 +779,9 @@ if PlugLoaded('coc.nvim')
             execute '!' . &keywordprg . " " . expand('<cword>')
         endif
     endfunction
+
+    "" Highlight the symbol and its references when holding the cursor.
+    "autocmd CursorHold * silent call CocActionAsync('highlight')
 
     if has('nvim-0.4.0') || has('patch-8.2.0750')
         nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
