@@ -13,7 +13,8 @@ endif
 if filereadable(expand('$VIMRUNTIME/vimrc_example.vim'))
     source $VIMRUNTIME/vimrc_example.vim
 endif
-if has('gui_running')
+
+function s:GuiConfig0()
     if filereadable(expand('$VIMRUNTIME/gvimrc_example.vim'))
         source $VIMRUNTIME/gvimrc_example.vim
     endif
@@ -23,7 +24,8 @@ if has('gui_running')
         set guifontwide=AR\ PL\ UKai\ CN\ 10
         "set guifont=Courier\ 10\ Pitch\ for\ Powerline\ 12
         "set guifont=Courier\ Prime\ for\ Powerline\ 12
-        set guifont=CourierPrime\ Nerd\ Font\ Mono\ 10
+        "set guifont=CourierPrime\ Nerd\ Font\ Mono\ 10
+        set guifont=Courier\ Prime\ Light\ 10
         "set guifont=Courier\ for\ Powerline\ 12
         "set guifont=DroidSansMono\ Nerd\ Font\ Mono\ 12
         "set guifont=Cousine\ Nerd\ Font\ Mono\ 12
@@ -51,8 +53,33 @@ if has('gui_running')
         "set guifont=FuraCodeNerdFontCompleteM-Regular:h12
         "set guifont=GoMonoForPowerline:h12
         "set guifont=CodeNewRomanNerdFontCompleteM-:h12
+    elseif has('nvim')
+        GuiFont! CourierPrime\ NF:h10
     endif
+    set showtabline=1
+    colorscheme nord
+    if PlugLoaded('vim-airline')
+        AirlineTheme nord
+    endif
+endfunction
+
+function s:GuiConfig()
+    if has('nvim')
+        if !exists('g:GuiLoaded')
+            return
+        endif
+    elseif !has('gui_running')
+        return
+    endif
+    call s:GuiConfig0()
+endfunction
+
+if has('nvim')
+    autocmd UIEnter * call s:GuiConfig()
+else
+    autocmd GUIEnter * call s:GuiConfig()
 endif
+
 if has('gui')
     set guioptions+=a
     set guioptions+=P
@@ -537,17 +564,8 @@ let g:material_terminal_italics = 1
 let g:tokyonight_style = 'storm'
 let g:tokyonight_enable_italic = 1
 let g:molokai_original = 1
-if has('gui_running')
-    "set background=dark
-    "colorscheme solarized
-    "colorscheme base16-github
-    "colorscheme paintbox
-    "colorscheme kalisi
-    "colorscheme macvim
-    colorscheme nord
-else
-    colorscheme seoul256-light
-endif
+
+colorscheme seoul256-light
 
 if PlugLoaded('vim-devicons')
     if has('gui_running')
