@@ -116,6 +116,7 @@ function IsNerdFont()
     return &guifont =~ 'NerdFont'
                 \ || &guifont =~ 'Nerd Font'
                 \ || &guifont =~ '_NF'
+                \ || &guifont =~ ' NF '
 endfunction
 
 function IsSymbolicFont()
@@ -123,9 +124,7 @@ function IsSymbolicFont()
 endfunction
 
 call plug#begin(expand('$HOME/.vim/plugged'))
-"""""""""""""""""""""""""""""
-"scm
-"""""""""""""""""""""""""""""
+"scm{{{
 Plug 'vim-scripts/vcscommand.vim'
 if version >= 800
     Plug 'tpope/vim-fugitive', {'as': 'vim-fugitive'}
@@ -139,11 +138,8 @@ if has('nvim') || has('patch-8.0.902')
 elseif version >= 704
     Plug 'mhinz/vim-signify', {'tag': 'legacy', 'as': 'vim-signify-vim74'}
 endif
-"""""""""""""""""""""""""""""
-
-"""""""""""""""""""""""""""""
-"colorschemes
-"""""""""""""""""""""""""""""
+"}}}
+"colorschemes {{{
 Plug 'vim-scripts/Colour-Sampler-Pack'
 "Plug 'flazz/vim-colorschemes'
 Plug 'rainglow/vim', {'as': 'rainglow-vim-colorschemes'}
@@ -159,16 +155,12 @@ Plug 'arcticicestudio/nord-vim'
 Plug 'ayu-theme/ayu-vim'
 Plug 'altercation/vim-colors-solarized'
 Plug 'lifepillar/vim-solarized8'
-"""""""""""""""""""""""""""""
-
-"""""""""""""""""""""""""""""
-"intellisense
-"""""""""""""""""""""""""""""
+"}}}
+"intellisense{{{
 Plug 'rust-lang/rust.vim'
 if version >= 800
     " coc.nvim, LanguageClient-neovim, vim-lsp
     let g:lsp_vendor = 'coc.nvim'
-
     if exists('g:lsp_vendor')
         if g:lsp_vendor == 'vim-lsp'
             Plug 'prabirshrestha/vim-lsp'
@@ -231,11 +223,8 @@ else
         Plug 'davidhalter/jedi-vim', {'for': 'python'}
     endif
 endif
-"""""""""""""""""""""""""""""
-
-"""""""""""""""""""""""""""""
-"filetype
-"""""""""""""""""""""""""""""
+"}}}
+"filetype{{{
 "if exists('*getcurpos')
 "    Plug 'sheerun/vim-polyglot'
 "endif
@@ -244,11 +233,8 @@ Plug 'posva/vim-vue'
 Plug 'mustache/vim-mustache-handlebars'
 Plug 'vim-latex/vim-latex'
 "Plug 'leafOfTree/vim-vue-plugin'
-"""""""""""""""""""""""""""""
-
-"""""""""""""""""""""""""""""
-"misc
-"""""""""""""""""""""""""""""
+"}}}
+"misc{{{
 if has('cscope') && executable('cscope')
     Plug 'brookhong/cscope.vim', {'as': 'cscove'}
 endif
@@ -313,7 +299,7 @@ Plug 'junegunn/fzf', { 'do': ':call fzf#install()' }
 Plug 'junegunn/fzf.vim'
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-colorscheme-switcher'
-"""""""""""""""""""""""""""""
+"}}}
 call plug#end()
 
 function! PlugLoaded(name)
@@ -499,7 +485,9 @@ let g:tokyonight_style = 'storm'
 let g:tokyonight_enable_italic = 1
 let g:molokai_original = 1
 
-colorscheme seoul256-light
+if PlugLoaded('nord-vim')
+    colorscheme nord
+endif
 
 if PlugLoaded('vim-devicons')
     if has('gui_running')
@@ -863,6 +851,23 @@ if PlugLoaded('vim-easy-align')
     nmap <Leader>ea <Plug>(EasyAlign)
 endif
 
+if PlugLoaded('markdown-preview.nvim')
+    let s:plantuml = expand('${HOME}/Downloads/plantuml/plantuml.sh')
+    if executable(s:plantuml)
+        let s:status = system(s:plantuml . ' status')
+        if s:status !~ "NOT
+            let s:port = substitute(substitute(s:status, '^.*at port(', '', 'g'), ').*$', '', 'g')
+            let g:mkdp_preview_options = {
+                        \ 'uml': {
+                        \   'server': 'http://localhost:' . s:port . '/plantuml'
+                        \   }
+                        \ }
+        else
+            "echomsg "plantuml is not locally started use remote server"
+        endif
+    endif
+endif
+
 if has('multi_byte')
     set fileencodings=ucs-bom,utf-8
     set fileencodings+=chinese,japanese,korean
@@ -905,20 +910,23 @@ endif
 function s:GuiConfig0()
     if filereadable(expand('$VIMRUNTIME/gvimrc_example.vim'))
         source $VIMRUNTIME/gvimrc_example.vim
+        " reset some settings
+        colorscheme default
+        set cmdheight=1
     endif
-    set cmdheight=1
     if has('gui_gtk')
         "set guifont=Courier\ 10\ Pitch\ 12
-        set guifontwide=AR\ PL\ UKai\ CN\ 10
+        set guifontwide=AR\ PL\ UKai\ CN\ 11
         "set guifont=Courier\ 10\ Pitch\ for\ Powerline\ 12
         "set guifont=Courier\ Prime\ for\ Powerline\ 12
-        "set guifont=CourierPrime\ Nerd\ Font\ Mono\ 10
-        set guifont=Courier\ Prime\ Light\ 10
+        "set guifont=CourierPrime\ Nerd\ Font\ Mono\ 11
+        "set guifont=Courier\ Prime\ Light\ 10
         "set guifont=Courier\ for\ Powerline\ 12
         "set guifont=DroidSansMono\ Nerd\ Font\ Mono\ 12
         "set guifont=Cousine\ Nerd\ Font\ Mono\ 12
         "set guifont=GoMono\ Nerd\ Font\ Mono\ 12
-        "set guifont=FuraCode\ Nerd\ Font\ Mono\ Medium\ 12
+        "set guifont=FuraCode\ Nerd\ Font\ Mono\ Medium\ 11
+        set guifont=JetBrainsMono\ NF\ 11
     elseif has('x11')
         set guifont=*-lucidatypewriter-medium-r-normal-*-*-180-*-*-m-*-*
     elseif has('gui_win32')
@@ -961,9 +969,9 @@ function s:GuiConfig0()
     set showtabline=1
     colorscheme nord
     if PlugLoaded('vim-airline')
-        if exists(':AirlineTheme')
-            AirlineTheme nord
-        endif
+        "if exists(':AirlineTheme')
+        "    AirlineTheme nord
+        "endif
         if IsSymbolicFont()
             let g:airline_powerline_fonts = 1
         else
@@ -986,3 +994,5 @@ elseif has('gui_running')
 else
     autocmd GUIEnter * call s:GuiConfig()
 endif
+
+" vim: foldmethod=marker
