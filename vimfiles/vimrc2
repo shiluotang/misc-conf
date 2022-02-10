@@ -52,6 +52,7 @@ let g:vim_plug_path = g:vim_plug_path_prefix . "/autoload/plug.vim"
 let g:plug_threads = 1
 let g:plug_retries = 1
 let g:plug_timeout = 3
+let g:plug_url_format = 'https://github.com.cnpmjs.org/%s.git'
 
 if empty(glob(expand(g:vim_plug_path)))
     if executable('curl')
@@ -295,6 +296,7 @@ if executable('ctags')
     Plug 'preservim/tagbar'
 endif
 "Plug 'tpope/vim-capslock'
+Plug 'tpope/vim-commentary'
 Plug 'junegunn/fzf', { 'do': ':call fzf#install()' }
 Plug 'junegunn/fzf.vim'
 Plug 'xolox/vim-misc'
