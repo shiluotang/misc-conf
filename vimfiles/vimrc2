@@ -46,13 +46,118 @@ if has('diff')
     endfor
 endif
 
+function! PlugLoaded(name)
+    if !exists('g:plugs')
+        return 0
+    endif
+    if has_key(g:plugs, a:name)
+        let plugdir = g:plugs[a:name].dir
+        let fixed_plugdir = substitute(substitute(plugdir, '\\$', '/', ''), '\/$', '', '')
+        return isdirectory(fixed_plugdir) && stridx(&rtp, fixed_plugdir)
+    endif
+    return 0
+endfunction
+
+function s:GuiConfig0()
+    if filereadable(expand('$VIMRUNTIME/gvimrc_example.vim'))
+        source $VIMRUNTIME/gvimrc_example.vim
+        " reset some settings
+        colorscheme default
+        set cmdheight=1
+    endif
+    if has('gui_gtk')
+        "set guifont=Courier\ 10\ Pitch\ 12
+        set guifontwide=AR\ PL\ UKai\ CN\ 10
+        "set guifont=Courier\ 10\ Pitch\ for\ Powerline\ 12
+        "set guifont=Courier\ Prime\ for\ Powerline\ 12
+        "set guifont=CourierPrime\ Nerd\ Font\ Mono\ 10
+        set guifont=Courier\ Prime\ Light\ 10
+        "set guifont=Courier\ for\ Powerline\ 12
+        "set guifont=DroidSansMono\ Nerd\ Font\ Mono\ 12
+        "set guifont=Cousine\ Nerd\ Font\ Mono\ 12
+        "set guifont=GoMono\ Nerd\ Font\ Mono\ 12
+        "set guifont=FuraCode\ Nerd\ Font\ Mono\ Medium\ 12
+    elseif has('x11')
+        set guifont=*-lucidatypewriter-medium-r-normal-*-*-180-*-*-m-*-*
+    elseif has('gui_win32')
+        scriptencoding utf8
+        set guifontwide=楷体:h10:cGB2312:qDRAFT
+        scriptencoding
+        set guifont=Courier_New:h10
+        "set guifont=Anonymice_Powerline:h10:cANSI
+        "set guifont=Cousine_NF:h10:cANSI
+        "set guifont=DroidSansMono_NF:h10:cANSI
+        "set guifont=FiraCode_Nerd_Font_Mono:h10:cANSI:qDRAFT
+    elseif has('gui_macvim') || has('gui_mac')
+        "set guifont=Courier:h12
+        set guifontwide=KaiTi:h14
+        "set guifont=CousineForPowerline:h12
+        "set guifont=CourierPrimeForPowerline:h12
+        set guifont=CourierPrimeNerdFontCompleteM-:h14
+        "set guifont=CourierForPowerline:h12
+        "set guifont=DroidSansMonoNerdFontCompleteM-:h20
+        "set guifont=FuraCodeNerdFontCompleteM-Regular:h12
+        "set guifont=GoMonoForPowerline:h12
+        "set guifont=CodeNewRomanNerdFontCompleteM-:h12
+    elseif has('nvim')
+        if exists(':GuiFont')
+            GuiFont! CourierPrime\ NF:h10
+        endif
+        " Disable GUI Tabline
+        if exists(':GuiTabline')
+            GuiTabline 0
+        endif
+        " Disable GUI Popupmenu
+        if exists(':GuiPopupmenu')
+            GuiPopupmenu 0
+        endif
+        " Disable GUI ScrollBar
+        if exists(':GuiScrollBar')
+            GuiScrollBar 0
+        endif
+    endif
+    set showtabline=1
+    "if PlugLoaded("vim-one")
+    "    colorscheme one
+    "    set background=light
+    "endif
+    "if PlugLoaded("vim-nord")
+    "    colorscheme nord
+    "endif
+    if PlugLoaded('vim-airline')
+        "if exists(':AirlineTheme')
+        "    AirlineTheme nord
+        "endif
+        if IsSymbolicFont()
+            let g:airline_powerline_fonts = 1
+        else
+            let g:airline_symbols_ascii = 1
+        endif
+    endif
+endfunction
+
+function s:GuiConfig()
+    if has('nvim') && exists('g:GuiLoaded')
+                \ || has('gui_running')
+        call s:GuiConfig0()
+    endif
+endfunction
+
+if has('nvim')
+    autocmd UIEnter * call s:GuiConfig()
+elseif has('gui_running')
+    call s:GuiConfig()
+else
+    autocmd GUIEnter * call s:GuiConfig()
+endif
+
 let g:vim_plug_path_prefix = &rtp[0 : stridx(&rtp, ",") - 1]
 let g:vim_plug_path = g:vim_plug_path_prefix . "/autoload/plug.vim"
 "let g:plug_home =
 let g:plug_threads = 1
 let g:plug_retries = 1
 let g:plug_timeout = 3
-let g:plug_url_format = 'https://github.com.cnpmjs.org/%s.git'
+let g:plug_url_format = 'https://github.com/%s.git'
 
 if empty(glob(expand(g:vim_plug_path)))
     if executable('curl')
@@ -240,9 +345,9 @@ if has('cscope') && executable('cscope')
     Plug 'brookhong/cscope.vim', {'as': 'cscove'}
 endif
 Plug 'shiluotang/vim-maven-plugin'
-if version > 703
-    Plug 'Chiel92/vim-autoformat'
-endif
+"if version > 703
+"    Plug 'Chiel92/vim-autoformat'
+"endif
 "Plug 'adizero/vim-clang-format'
 Plug 'godlygeek/tabular'
 Plug 'junegunn/vim-easy-align'
@@ -288,6 +393,8 @@ elseif g:nerd_font_in_terminal == 1
 endif
 
 Plug 'vim-scripts/dbext.vim'
+"Plug 'vim-scripts/csv.vim', {'as': 'vim-csv'}
+Plug 'chrisbra/csv.vim'
 if executable('w3m')
     Plug 'yuratomo/w3m.vim'
 endif
@@ -303,16 +410,6 @@ Plug 'xolox/vim-misc'
 Plug 'xolox/vim-colorscheme-switcher'
 "}}}
 call plug#end()
-
-function! PlugLoaded(name)
-    if has_key(g:plugs, a:name)
-        let plugdir = g:plugs[a:name].dir
-        let fixed_plugdir = substitute(substitute(plugdir, '\\$', '/', ''),
-                    \ '\/$', '', '')
-        return isdirectory(fixed_plugdir) && stridx(&rtp, fixed_plugdir)
-    endif
-    return 0
-endfunction
 
 if PlugLoaded('nerdtree')
             \ || PlugLoaded('nerdtree-vim74')
@@ -332,8 +429,8 @@ else
     let g:netrw_altv = 1
     let g:netrw_winsize = 25
     augroup ProjectDrawer
-      autocmd!
-      autocmd VimEnter * :Vexplore
+        autocmd!
+        autocmd VimEnter * :Vexplore
     augroup END
 endif
 
@@ -870,6 +967,14 @@ if PlugLoaded('markdown-preview.nvim')
     endif
 endif
 
+if PlugLoaded('vim-easycomplete')
+  let g:easycomplete_tab_trigger="<c-x><c-u>"
+endif
+
+if PlugLoaded('vim-commentary')
+    autocmd FileType cpp setlocal commentstring=//%s
+endif
+
 if has('multi_byte')
     set fileencodings=ucs-bom,utf-8
     set fileencodings+=chinese,japanese,korean
@@ -907,94 +1012,6 @@ set expandtab
 
 if filereadable(expand('$VIMRUNTIME/macros/matchit.vim'))
     execute "source " . expand('$VIMRUNTIME/macros/matchit.vim')
-endif
-
-function s:GuiConfig0()
-    if filereadable(expand('$VIMRUNTIME/gvimrc_example.vim'))
-        source $VIMRUNTIME/gvimrc_example.vim
-        " reset some settings
-        colorscheme default
-        set cmdheight=1
-    endif
-    if has('gui_gtk')
-        "set guifont=Courier\ 10\ Pitch\ 12
-        set guifontwide=AR\ PL\ UKai\ CN\ 11
-        "set guifont=Courier\ 10\ Pitch\ for\ Powerline\ 12
-        "set guifont=Courier\ Prime\ for\ Powerline\ 12
-        "set guifont=CourierPrime\ Nerd\ Font\ Mono\ 11
-        "set guifont=Courier\ Prime\ Light\ 10
-        "set guifont=Courier\ for\ Powerline\ 12
-        "set guifont=DroidSansMono\ Nerd\ Font\ Mono\ 12
-        "set guifont=Cousine\ Nerd\ Font\ Mono\ 12
-        "set guifont=GoMono\ Nerd\ Font\ Mono\ 12
-        "set guifont=FuraCode\ Nerd\ Font\ Mono\ Medium\ 11
-        set guifont=JetBrainsMono\ NF\ 11
-    elseif has('x11')
-        set guifont=*-lucidatypewriter-medium-r-normal-*-*-180-*-*-m-*-*
-    elseif has('gui_win32')
-        scriptencoding utf8
-        set guifontwide=楷体:h10:cGB2312:qDRAFT
-        scriptencoding
-        set guifont=Courier_New:h10
-        "set guifont=Anonymice_Powerline:h10:cANSI
-        "set guifont=Cousine_NF:h10:cANSI
-        "set guifont=DroidSansMono_NF:h10:cANSI
-        "set guifont=FiraCode_Nerd_Font_Mono:h10:cANSI:qDRAFT
-    elseif has('gui_macvim') || has('gui_mac')
-        "set guifont=Courier:h12
-        set guifontwide=KaiTi:h12
-        "set guifont=CousineForPowerline:h12
-        "set guifont=CourierPrimeForPowerline:h12
-        set guifont=CourierPrimeNerdFontCompleteM-:h12
-        "set guifont=CourierForPowerline:h12
-        "set guifont=DroidSansMonoNerdFontCompleteM-:h20
-        "set guifont=FuraCodeNerdFontCompleteM-Regular:h12
-        "set guifont=GoMonoForPowerline:h12
-        "set guifont=CodeNewRomanNerdFontCompleteM-:h12
-    elseif has('nvim')
-        if exists(':GuiFont')
-            GuiFont! CourierPrime\ NF:h10
-        endif
-        " Disable GUI Tabline
-        if exists(':GuiTabline')
-            GuiTabline 0
-        endif
-        " Disable GUI Popupmenu
-        if exists(':GuiPopupmenu')
-            GuiPopupmenu 0
-        endif
-        " Disable GUI ScrollBar
-        if exists(':GuiScrollBar')
-            GuiScrollBar 0
-        endif
-    endif
-    set showtabline=1
-    colorscheme nord
-    if PlugLoaded('vim-airline')
-        "if exists(':AirlineTheme')
-        "    AirlineTheme nord
-        "endif
-        if IsSymbolicFont()
-            let g:airline_powerline_fonts = 1
-        else
-            let g:airline_symbols_ascii = 1
-        endif
-    endif
-endfunction
-
-function s:GuiConfig()
-    if has('nvim') && exists('g:GuiLoaded')
-                \ || has('gui_running')
-        call s:GuiConfig0()
-    endif
-endfunction
-
-if has('nvim')
-    autocmd UIEnter * call s:GuiConfig()
-elseif has('gui_running')
-    call s:GuiConfig()
-else
-    autocmd GUIEnter * call s:GuiConfig()
 endif
 
 " vim: foldmethod=marker
