@@ -117,17 +117,17 @@ function s:GuiConfig0()
         endif
     endif
     set showtabline=1
-    "if PlugLoaded("vim-one")
-    "    colorscheme one
-    "    set background=light
-    "endif
-    "if PlugLoaded("vim-nord")
+    if PlugLoaded("vim-one")
+        colorscheme one
+        set background=light
+    endif
+    "if PlugLoaded("nord-vim")
     "    colorscheme nord
     "endif
     if PlugLoaded('vim-airline')
-        "if exists(':AirlineTheme')
-        "    AirlineTheme nord
-        "endif
+        if exists(':AirlineTheme')
+            execute "AirlineTheme " . g:colors_name
+        endif
         if IsSymbolicFont()
             let g:airline_powerline_fonts = 1
         else
@@ -142,14 +142,6 @@ function s:GuiConfig()
         call s:GuiConfig0()
     endif
 endfunction
-
-if has('nvim')
-    autocmd UIEnter * call s:GuiConfig()
-elseif has('gui_running')
-    call s:GuiConfig()
-else
-    autocmd GUIEnter * call s:GuiConfig()
-endif
 
 let g:vim_plug_path_prefix = &rtp[0 : stridx(&rtp, ",") - 1]
 let g:vim_plug_path = g:vim_plug_path_prefix . "/autoload/plug.vim"
@@ -249,6 +241,7 @@ endif
 Plug 'vim-scripts/Colour-Sampler-Pack'
 "Plug 'flazz/vim-colorschemes'
 Plug 'rainglow/vim', {'as': 'rainglow-vim-colorschemes'}
+"Plug 'rafi/awesome-vim-colorschemes'
 Plug 'joshdick/onedark.vim'
 Plug 'dracula/vim', {'as': 'dracula.vim'}
 Plug 'chriskempson/base16-vim'
@@ -585,7 +578,9 @@ let g:tokyonight_enable_italic = 1
 let g:molokai_original = 1
 
 if PlugLoaded('nord-vim')
-    colorscheme nord
+    if ! exists("g:colors_name")
+        colorscheme nord
+    endif
 endif
 
 if PlugLoaded('vim-devicons')
@@ -954,7 +949,7 @@ if PlugLoaded('markdown-preview.nvim')
     let s:plantuml = expand('${HOME}/Downloads/plantuml/plantuml.sh')
     if executable(s:plantuml)
         let s:status = system(s:plantuml . ' status')
-        if s:status !~ "NOT
+        if s:status !~ "NOT"
             let s:port = substitute(substitute(s:status, '^.*at port(', '', 'g'), ').*$', '', 'g')
             let g:mkdp_preview_options = {
                         \ 'uml': {
@@ -1013,5 +1008,13 @@ set expandtab
 if filereadable(expand('$VIMRUNTIME/macros/matchit.vim'))
     execute "source " . expand('$VIMRUNTIME/macros/matchit.vim')
 endif
+
+if has('nvim')"{{{
+    autocmd UIEnter * call s:GuiConfig()
+elseif has('gui_running')
+    call s:GuiConfig()
+else
+    autocmd GUIEnter * call s:GuiConfig()
+endif"}}}
 
 " vim: foldmethod=marker
