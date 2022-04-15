@@ -71,7 +71,8 @@ function s:GuiConfig0()
         "set guifont=Courier\ 10\ Pitch\ for\ Powerline\ 12
         "set guifont=Courier\ Prime\ for\ Powerline\ 12
         "set guifont=CourierPrime\ Nerd\ Font\ Mono\ 10
-        set guifont=Courier\ Prime\ Light\ 10
+        "set guifont=Courier\ Prime\ Light\ 11
+        set guifont=JetBrainsMono\ NF\ 11
         "set guifont=Courier\ for\ Powerline\ 12
         "set guifont=DroidSansMono\ Nerd\ Font\ Mono\ 12
         "set guifont=Cousine\ Nerd\ Font\ Mono\ 12
