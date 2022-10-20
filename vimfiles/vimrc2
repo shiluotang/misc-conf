@@ -141,6 +141,7 @@ function s:GuiConfig()
     if has('nvim') && exists('g:GuiLoaded')
                 \ || has('gui_running')
         call s:GuiConfig0()
+        call s:LoadPlugins()
     endif
 endfunction
 
@@ -222,6 +223,7 @@ function IsSymbolicFont()
     return IsPowerlineFont() || IsNerdFont()
 endfunction
 
+function s:LoadPlugins()
 call plug#begin(expand('$HOME/.vim/plugged'))
 "scm{{{
 Plug 'vim-scripts/vcscommand.vim'
@@ -382,8 +384,10 @@ if has('gui_running')
     if IsNerdFont()
         Plug 'ryanoasis/vim-devicons'
     endif
-elseif g:nerd_font_in_terminal == 1
-    Plug 'ryanoasis/vim-devicons'
+else
+    if g:nerd_font_in_terminal == 1
+        Plug 'ryanoasis/vim-devicons'
+    endif
 endif
 
 Plug 'vim-scripts/dbext.vim'
@@ -404,6 +408,9 @@ Plug 'xolox/vim-misc'
 Plug 'xolox/vim-colorscheme-switcher'
 "}}}
 call plug#end()
+endfunction
+
+call s:LoadPlugins()
 
 if PlugLoaded('nerdtree')
             \ || PlugLoaded('nerdtree-vim74')
@@ -791,6 +798,7 @@ if PlugLoaded('coc.nvim')
     nmap <silent>   <Leader>gy <Plug>(coc-type-definition)
     nmap <silent>   <Leader>gi <Plug>(coc-implementation)
     nmap <silent>   <Leader>gr <Plug>(coc-references)
+    nmap <silent>   <Leader>gR <Plug>(coc-references-used)
     nmap <silent>   <Leader>gG <Plug>(coc-format)
     nmap <silent>   <Leader>gf <Plug>(coc-fix-current)
     nmap <silent>   <Leader>ga <Plug>(coc-codeaction-selected)
@@ -798,6 +806,7 @@ if PlugLoaded('coc.nvim')
     nmap            <Leader>rn <Plug>(coc-rename)
     nmap <silent>   <Leader>n  :CocCommand explorer<CR>
     nmap <silent>   <Leader>gD :CocDiagnostics<CR>
+    nmap <silent>   <Leader>go :CocOutline<CR>
 
     " Use K to show documentation in preview window.
     nnoremap <silent> <Leader>gk :call <SID>show_documentation()<CR>
@@ -828,11 +837,11 @@ if PlugLoaded('coc.nvim')
     endif
 
     if exists('&tagfunc')
-        autocmd filetype vim,typescript,javascript,java,c,cpp,cs,json,python,sh,cmake setlocal tagfunc=CocTagFunc
+        autocmd filetype vim,typescript,javascript,java,c,cpp,cs,json,python,lua,sh,cmake setlocal tagfunc=CocTagFunc
     else
-        autocmd filetype vim,typescript,javascript,java,c,cpp,cs,json,python,sh,cmake
+        autocmd filetype vim,typescript,javascript,java,c,cpp,cs,json,python,lua,sh,cmake
                     \ nnoremap <buffer> <silent> <C-]> <Leader>gd
-        autocmd filetype vim,typescript,javascript,java,c,cpp,cs,json,python,sh,cmake
+        autocmd filetype vim,typescript,javascript,java,c,cpp,cs,json,python,lua,sh,cmake
                     \ nnoremap <buffer> <silent> <C-T> <C-O>
     endif
 endif
@@ -939,6 +948,7 @@ endif
 
 if PlugLoaded('fzf.vim')
     nmap <Leader>F :Files<CR>
+    nmap <Leader>B :Buffers<CR>
 endif
 
 if PlugLoaded('vim-easy-align')
@@ -986,6 +996,7 @@ if has('autocmd')
     autocmd filetype javascript setlocal syntax=javascript.doxygen
     autocmd filetype python let python_highlight_all = 1
     autocmd BufReadCmd *.nar call zip#Browse(expand("<amatch>"))
+    autocmd BufReadCmd *.tar.gz call zip#Browse(expand("<amatch>"))
     autocmd BufReadCmd *.jar.original call zip#Browse(expand("<amatch>"))
     if filereadable(expand('$VIMRUNTIME/ftplugin/man.vim'))
         runtime ftplugin/man.vim
