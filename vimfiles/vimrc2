@@ -5,6 +5,7 @@ if has('win32')
             let $LANG=expand('$lang') . '.UTF-8'
         endif
         set encoding=utf-8
+        scriptencoding utf-8
         if version >= 802 && has('iconv')
             set makeencoding=char
         endif
@@ -81,9 +82,7 @@ function s:GuiConfig0()
     elseif has('x11')
         set guifont=*-lucidatypewriter-medium-r-normal-*-*-180-*-*-m-*-*
     elseif has('gui_win32')
-        scriptencoding utf8
         set guifontwide=楷体:h10:cGB2312:qDRAFT
-        scriptencoding
         set guifont=Courier_New:h10
         "set guifont=Anonymice_Powerline:h10:cANSI
         "set guifont=Cousine_NF:h10:cANSI
@@ -131,6 +130,11 @@ function s:GuiConfig0()
         endif
         if IsSymbolicFont()
             let g:airline_powerline_fonts = 1
+            "fix the stupid update without considering nerd fonts
+            if !exists('g:airline_symbols')
+                let g:airline_symbols = {}
+            endif
+            let g:airline_symbols.colnr = ' :'
         else
             let g:airline_symbols_ascii = 1
         endif
@@ -142,6 +146,7 @@ function s:GuiConfig()
                 \ || has('gui_running')
         call s:GuiConfig0()
         call s:LoadPlugins()
+        call s:CustomizePlugins()
     endif
 endfunction
 
@@ -410,8 +415,60 @@ Plug 'xolox/vim-colorscheme-switcher'
 call plug#end()
 endfunction
 
-call s:LoadPlugins()
+function DumpMavenClasspath()
+    let s:classpath_filename = '.jccp'
+    let s:found = findfile('pom.xml', '.;')
+    let s:dir = fnamemodify(s:found, ':p:h')
+    if !empty(s:found)
+        call system('mvn -o -q -f '
+                    \ . s:found
+                    \ . ' dependency:build-classpath'
+                    \ . ' -Dmdep.cpFile='
+                    \ . s:classpath_filename)
+        let s:classpaths_file = s:dir . '/' . s:classpath_filename
+        if filereadable(s:classpaths_file)
+            for line in readfile(s:classpaths_file, '', 1)
+                "for entry in split(line, ':')
+                "    echo entry
+                "endfor
+                call javacomplete#SetClassPath(line)
+                if isdirectory(s:dir . '/target/classes')
+                    call javacomplete#AddClassPath(s:dir . '/target/classes')
+                endif
+            endfor
+        else
+            echo s:classpaths_file . ' is not readable'
+        endif
+    endif
+endfunction
 
+function DumpMavenClasspath2()
+    let s:found = findfile('pom.xml', '.;')
+    let s:dir = fnamemodify(s:found, ':p:h')
+    if !empty(s:found)
+        let s:cmd = 'mvn -o -f '
+                    \ . shellescape(s:found)
+                    \ . ' dependency:build-classpath'
+        let s:lines = []
+        if exists('*systemlist')
+            let s:lines = systemlist(s:cmd)
+        else
+            let s:lines = split(system(s:cmd), '\n')
+        endif
+        let s:classpaths = []
+        for s:line in s:lines
+            if s:line =~ '^['
+            else
+                call extend(s:classpaths, split(s:line, ':'))
+            endif
+        endfor
+        for s:classpath in uniq(sort(s:classpaths))
+            echo s:classpath
+        endfor
+    endif
+endfunction
+
+function s:CustomizePlugins()
 if PlugLoaded('nerdtree')
             \ || PlugLoaded('nerdtree-vim74')
             \ || PlugLoaded('nerdtree-vim73')
@@ -457,11 +514,20 @@ if PlugLoaded('vim-airline')
     if has('gui_running')
         if IsSymbolicFont()
             let g:airline_powerline_fonts = 1
+            "fix the stupid update without considering nerd fonts
+            if !exists('g:airline_symbols')"{{{
+                let g:airline_symbols = {}
+            endif
+            let g:airline_symbols.colnr = ' :'"}}}
         else
             let g:airline_symbols_ascii = 1
         endif
     elseif g:nerd_font_in_terminal == 1
         let g:airline_powerline_fonts = 1
+        if !exists('g:airline_symbols')
+            let g:airline_symbols = {}
+        endif
+        let g:airline_symbols.colnr = ' :'
     else
         let g:airline_symbols_ascii = 1
     endif
@@ -605,9 +671,7 @@ if PlugLoaded('vim-devicons')
     if has('macunix')
         let g:WebDevIconsOS = 'Darwin'
     endif
-    scriptencoding utf8
     let g:WebDevIconsUnicodeByteOrderMarkerDefaultSymbol = ''
-    scriptencoding
 endif
 
 if PlugLoaded('nerdtree-git-plugin')
@@ -712,59 +776,6 @@ if PlugLoaded('w3m.vim')
     let g:w3m#disable_vimproc = 1
 endif
 
-function DumpMavenClasspath()
-    let s:classpath_filename = '.jccp'
-    let s:found = findfile('pom.xml', '.;')
-    let s:dir = fnamemodify(s:found, ':p:h')
-    if !empty(s:found)
-        call system('mvn -o -q -f '
-                    \ . s:found
-                    \ . ' dependency:build-classpath'
-                    \ . ' -Dmdep.cpFile='
-                    \ . s:classpath_filename)
-        let s:classpaths_file = s:dir . '/' . s:classpath_filename
-        if filereadable(s:classpaths_file)
-            for line in readfile(s:classpaths_file, '', 1)
-                "for entry in split(line, ':')
-                "    echo entry
-                "endfor
-                call javacomplete#SetClassPath(line)
-                if isdirectory(s:dir . '/target/classes')
-                    call javacomplete#AddClassPath(s:dir . '/target/classes')
-                endif
-            endfor
-        else
-            echo s:classpaths_file . ' is not readable'
-        endif
-    endif
-endfunction
-
-function DumpMavenClasspath2()
-    let s:found = findfile('pom.xml', '.;')
-    let s:dir = fnamemodify(s:found, ':p:h')
-    if !empty(s:found)
-        let s:cmd = 'mvn -o -f '
-                    \ . shellescape(s:found)
-                    \ . ' dependency:build-classpath'
-        let s:lines = []
-        if exists('*systemlist')
-            let s:lines = systemlist(s:cmd)
-        else
-            let s:lines = split(system(s:cmd), '\n')
-        endif
-        let s:classpaths = []
-        for s:line in s:lines
-            if s:line =~ '^['
-            else
-                call extend(s:classpaths, split(s:line, ':'))
-            endif
-        endfor
-        for s:classpath in uniq(sort(s:classpaths))
-            echo s:classpath
-        endfor
-    endif
-endfunction
-
 if PlugLoaded('javacomplete')
     augroup JavaComplete
         autocmd filetype java setlocal omnifunc=javacomplete#Complete
@@ -861,9 +872,7 @@ if PlugLoaded('vista.vim')
                 \ 'packages': "\uf487",
                 \ 'method': "\uf794",
                 \ }
-    scriptencoding utf8
     let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
-    scriptencoding
     " Ensure you have installed some decent font to show these pretty symbols,
     " then you can enable icon for the kind.
     let g:vista#renderer#enable_icon = 1
@@ -957,7 +966,7 @@ if PlugLoaded('vim-easy-align')
 endif
 
 if PlugLoaded('markdown-preview.nvim')
-    let s:plantuml = expand('${HOME}/Downloads/plantuml/plantuml.sh')
+    let s:plantuml = expand('$HOME/Downloads/plantuml/plantuml.sh')
     if executable(s:plantuml)
         let s:status = system(s:plantuml . ' status')
         if s:status !~ "NOT"
@@ -980,6 +989,10 @@ endif
 if PlugLoaded('vim-commentary')
     autocmd FileType cpp setlocal commentstring=//%s
 endif
+endfunction
+
+call s:LoadPlugins()
+call s:CustomizePlugins()
 
 if has('multi_byte')
     set fileencodings=ucs-bom,utf-8
@@ -1021,12 +1034,12 @@ if filereadable(expand('$VIMRUNTIME/macros/matchit.vim'))
     execute "source " . expand('$VIMRUNTIME/macros/matchit.vim')
 endif
 
-if has('nvim')"{{{
+if has('nvim')
     autocmd UIEnter * call s:GuiConfig()
 elseif has('gui_running')
     call s:GuiConfig()
 else
     autocmd GUIEnter * call s:GuiConfig()
-endif"}}}
+endif
 
 " vim: foldmethod=marker
