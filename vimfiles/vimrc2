@@ -59,6 +59,14 @@ function! PlugLoaded(name)
     return 0
 endfunction
 
+function s:FixAirlineColumnSymbol()
+    "fix the stupid update without considering nerd fonts
+    if !exists('g:airline_symbols')
+        let g:airline_symbols = {}
+    endif
+    let g:airline_symbols.colnr = ' :'
+endfunction
+
 function s:GuiConfig0()
     if filereadable(expand('$VIMRUNTIME/gvimrc_example.vim'))
         source $VIMRUNTIME/gvimrc_example.vim
@@ -130,11 +138,7 @@ function s:GuiConfig0()
         endif
         if IsSymbolicFont()
             let g:airline_powerline_fonts = 1
-            "fix the stupid update without considering nerd fonts
-            if !exists('g:airline_symbols')
-                let g:airline_symbols = {}
-            endif
-            let g:airline_symbols.colnr = ' :'
+            call s:FixAirlineColumnSymbol()
         else
             let g:airline_symbols_ascii = 1
         endif
@@ -514,20 +518,13 @@ if PlugLoaded('vim-airline')
     if has('gui_running')
         if IsSymbolicFont()
             let g:airline_powerline_fonts = 1
-            "fix the stupid update without considering nerd fonts
-            if !exists('g:airline_symbols')"{{{
-                let g:airline_symbols = {}
-            endif
-            let g:airline_symbols.colnr = ' :'"}}}
+            call s:FixAirlineColumnSymbol()
         else
             let g:airline_symbols_ascii = 1
         endif
     elseif g:nerd_font_in_terminal == 1
         let g:airline_powerline_fonts = 1
-        if !exists('g:airline_symbols')
-            let g:airline_symbols = {}
-        endif
-        let g:airline_symbols.colnr = ' :'
+        call s:FixAirlineColumnSymbol()
     else
         let g:airline_symbols_ascii = 1
     endif
