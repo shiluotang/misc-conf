@@ -955,6 +955,9 @@ endif
 if PlugLoaded('fzf.vim')
     nmap <Leader>F :Files<CR>
     nmap <Leader>B :Buffers<CR>
+    if has('win32')
+        let g:fzf_commits_log_options = '--graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr"'
+    endif
 endif
 
 if PlugLoaded('vim-easy-align')
