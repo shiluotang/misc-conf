@@ -1,0 +1,172 @@
+﻿function! s:SourceIfExists(filename)
+    if filereadable(expand(a:filename))
+        execute "source " . expand(a:filename)
+    endif
+endfunction
+
+function! s:ChangeOptions(name, opts, op)
+    let s:idx = 0
+    let s:olen = 0
+    if typename(a:opts) == "string"
+        let s:olen = strlen(a:opts)
+    elseif typename(a:opts) =~ "list"
+        let s:olen = len(a:opts)
+    endif
+    while s:idx < s:olen
+        execute "set " . a:name . a:op . "=" . a:opts[s:idx]
+        let s:idx = s:idx + 1
+    endwhile
+endfunction
+
+function! s:CommonControls()
+    set tabstop=4
+    set shiftwidth=4
+    set expandtab
+    set laststatus=2
+    if &scrolloff > 0
+        set scrolloff=0
+    endif
+    call s:ChangeOptions("fileencodings", ["default", "latin1"],  "-")
+    call s:ChangeOptions("fileencodings"
+                \, ["chinese", "taiwan", "japan", "korea"],  "+")
+    call s:ChangeOptions("fileencodings", ["default", "latin1"],  "+")
+    if has("autocmd")
+        autocmd FileType vim setlocal textwidth=80 colorcolumn=+1
+        autocmd FileType cpp setlocal
+                    \ commentstring=//%s
+                    \ syntax=cpp.doxygen
+                    \ textwidth=80
+                    \ colorcolumn=+1
+        autocmd FileType c setlocal
+                    \ syntax=c.doxygen
+                    \ textwidth=80
+                    \ colorcolumn=+1
+    endif
+    set modeline
+    let g:netrw_ftp_cmd = "ftp -a"
+endfunction
+
+function! s:IsFontInstalled(fontname)
+    return len(split(system("fc-list | grep '" . a:fontname . "'"), '\n')) > 0
+endfunction
+
+function! s:GuiControls()
+    call s:ChangeOptions("guioptions", "mTrRlLbh", "-")
+    if has("linux")
+        let s:fontname = "JetBrainsMono NFM"
+        let s:fontsize = 11
+        " use nerdfont unless it's not found
+        if ! s:IsFontInstalled(s:fontname)
+            let s:fontname="Monospace"
+        endif
+        execute "set guifont=" . substitute(s:fontname . " " . s:fontsize, " ", '\\ ', "g")
+    endif
+endfunction
+
+function! s:PluginsInit()
+    if ! filereadable(expand("$HOME/.vim/autoload/plug.vim"))
+        return 1
+    endif
+    call plug#begin()
+    Plug 'vim-scripts/vcscommand.vim'
+    Plug 'tpope/vim-fugitive'
+    if has('nvim') || has('patch-8.0.902')
+      Plug 'mhinz/vim-signify'
+    else
+      Plug 'mhinz/vim-signify', { 'tag': 'legacy' }
+    endif
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    Plug 'vim-airline/vim-airline'
+    Plug 'vim-airline/vim-airline-themes'
+    " Plug 'preservim/nerdtree', {'on': 'NERDTreeToggle'}
+    Plug 'preservim/nerdtree'
+    Plug 'preservim/tagbar'
+    Plug 'tpope/vim-commentary'
+    Plug 'godlygeek/tabular'
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+    Plug 'junegunn/fzf.vim'
+    Plug 'flazz/vim-colorschemes'
+    " Always load the vim-devicons as the very last one to make it fully
+    " functional
+    if s:IsFontInstalled("JetBrainsMono")
+        Plug 'ryanoasis/vim-devicons'
+    endif
+    call plug#end()
+endfunction
+
+function! s:PlugInstalled(name)
+    return has_key(g:plugs, a:name)
+                \ && isdirectory(g:plugs[a:name].dir)
+endfunction
+
+function! s:PlugLoaded(name)
+    if ! s:PlugInstalled(a:name)
+        return 0
+    endif
+    let s:dir = g:plugs[a:name].dir
+    if s:dir =~ ".*/"
+        let s:dir = strpart(s:dir, 0, strlen(s:dir) - 1)
+    endif
+    return isdirectory(s:dir)
+                \ && stridx(&rtp, s:dir) >= 0
+endfunction
+
+function s:FixAirlineSymbol()
+    if ! exists('g:airline_powerline_fonts') || ! g:airline_powerline_fonts
+        return
+    endif
+    if ! exists('g:airline_symbols')
+        let g:airline_symbols = {}
+    endif
+    let g:airline_symbols.colnr = " \ue0a3:"
+endfunction
+
+function! s:PluginsConfig()
+    if s:PlugInstalled('nerdtree')
+        nnoremap <C-n> :NERDTreeToggle<CR>
+    endif
+    if s:PlugLoaded('nerdtree')
+        nnoremap <Leader>n :NERDTreeFocus<CR>
+        nnoremap <C-f> :NERDTreeFind<CR>
+        nnoremap <Leader>nf :NERDTreeFind<CR>
+    endif
+    if s:PlugLoaded('coc.nvim')
+        runtime! coc-cfg.vim
+        if exists("&tagfunc")
+            autocmd FileType c,cpp,vim set tagfunc=CocTagFunc
+        endif
+    endif
+    if s:PlugLoaded('tagbar')
+        nmap <F8> :TagbarToggle<CR>
+        nmap <Leader>t :TagbarToggle<CR>
+    endif
+    if s:PlugLoaded('vim-airline')
+        if s:IsFontInstalled("JetBrainsMono")
+            let g:airline_powerline_fonts = 1
+            call s:FixAirlineSymbol()
+        endif
+    endif
+    if s:PlugLoaded('vim-devicons')
+        if has('gui_running')
+            let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
+        endif
+        let g:DevIconsEnableFoldersOpenClose = 1
+        let g:WebDevIconsUnicodeByteOrderMarkerDefaultSymbol = ''
+    endif
+    runtime! ftplugin/man.vim
+endfunction
+
+call s:SourceIfExists("$VIMRUNTIME/vimrc_example.vim")
+call s:CommonControls()
+if has("gui_running")
+    call s:SourceIfExists("$VIMRUNTIME/gvimrc_example.vim")
+    call s:GuiControls()
+else
+    colorscheme industry
+    augroup GUIEnter *
+        call s:SourceIfExists("$VIMRUNTIME/gvimrc_example.vim")
+        call s:GuiControls()
+    augroup END
+endif
+call s:PluginsInit()
+call s:PluginsConfig()
