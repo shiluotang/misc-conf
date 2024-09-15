@@ -80,6 +80,7 @@ function! s:PluginsInit()
     Plug 'vim-airline/vim-airline-themes'
     " Plug 'preservim/nerdtree', {'on': 'NERDTreeToggle'}
     Plug 'preservim/nerdtree'
+    Plug 'Xuyuanp/nerdtree-git-plugin'
     Plug 'preservim/tagbar'
     Plug 'tpope/vim-commentary'
     Plug 'godlygeek/tabular'
@@ -129,6 +130,14 @@ function! s:PluginsConfig()
         nnoremap <Leader>n :NERDTreeFocus<CR>
         nnoremap <C-f> :NERDTreeFind<CR>
         nnoremap <Leader>nf :NERDTreeFind<CR>
+    endif
+    if s:PlugLoaded("nerdtree-git-plugin")
+        if s:IsFontInstalled("JetBrainsMono")
+            let g:NERDTreeGitStatusUseNerdFonts = 1
+        endif
+        if ! s:PlugLoaded("vim-devicons")
+            let g:NERDTreeGitStatusConcealBrackets = 1
+        endif
     endif
     if s:PlugLoaded('coc.nvim')
         runtime! coc-cfg.vim
