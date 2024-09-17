@@ -1,17 +1,16 @@
 #!/usr/bin/env zsh
 
 # Make sure to use double quotes
-# zplug "zsh-users/zsh-history-substring-search"
-
 zplug "plugins/git", from:oh-my-zsh
 zplug "plugins/tmux", from:oh-my-zsh
 zplug "plugins/common-aliases", from:oh-my-zsh
+
 zplug "lib/completion", from:oh-my-zsh, defer:2
 zplug "lib/directories", from:oh-my-zsh, defer:2
+zplug "lib/history", from:oh-my-zsh, defer:2
+zplug "lib/key-bindings", from:oh-my-zsh, defer:2
 zplug "lib/theme-and-appearance", from:oh-my-zsh, defer:2
 
-# zplug "zsh-users/zsh-syntax-highlighting", defer:2
-# zplug "zsh-users/zsh-autosuggestions", defer:2
 zplug "zsh-users/zsh-completions", defer:2
 zplug "nvm-sh/nvm", use:"nvm.sh"
 
