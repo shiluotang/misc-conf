@@ -15,7 +15,7 @@ zplug "zsh-users/zsh-completions", defer:2
 zplug "nvm-sh/nvm", use:"nvm.sh"
 
 # Can manage local plugins
-zplug "~/.zsh", from:local, use:"*.zsh", as:plugin
+zplug "$HOME/.zsh", from:local, use:"*.zsh", as:plugin
 
 # Load theme file
 # zplug 'dracula/zsh', as:theme
