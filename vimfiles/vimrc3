@@ -52,7 +52,7 @@ endfunction
 
 function! s:GuiControls()
     call s:ChangeOptions("guioptions", "mTrRlLbh", "-")
-    if has("linux")
+    if has("linux") || has("bsd")
         let s:fontname = "JetBrainsMono NFM"
         let s:fontsize = 11
         " use nerdfont unless it's not found
