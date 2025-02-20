@@ -63,8 +63,20 @@ function! s:GuiControls()
     endif
 endfunction
 
+function s:FindFileRTP(filename)
+    let s:dir = ''
+    let s:found = ''
+    for s:dir in split(&rtp, ',')
+        if filereadable(s:dir . a:filename)
+            let s:found = s:dir . a:filename
+            break
+        endif
+    endfor
+    return s:found
+endfunction
+
 function! s:PluginsInit()
-    if ! filereadable(expand("$HOME/.vim/autoload/plug.vim"))
+    if ! s:FindFileRTP('autoload/plug.vim') == ''
         return 1
     endif
     call plug#begin()
@@ -96,7 +108,8 @@ function! s:PluginsInit()
 endfunction
 
 function! s:PlugInstalled(name)
-    return has_key(g:plugs, a:name)
+    return has('g:plugs')
+                \ && has_key(g:plugs, a:name)
                 \ && isdirectory(g:plugs[a:name].dir)
 endfunction
 
