@@ -76,7 +76,7 @@ function s:FindFileRTP(filename)
 endfunction
 
 function! s:PluginsInit()
-    if ! s:FindFileRTP('autoload/plug.vim') == ''
+    if s:FindFileRTP('autoload/plug.vim') == ''
         return 1
     endif
     call plug#begin()
@@ -108,7 +108,7 @@ function! s:PluginsInit()
 endfunction
 
 function! s:PlugInstalled(name)
-    return has('g:plugs')
+    return exists('g:plugs')
                 \ && has_key(g:plugs, a:name)
                 \ && isdirectory(g:plugs[a:name].dir)
 endfunction
@@ -118,7 +118,7 @@ function! s:PlugLoaded(name)
         return 0
     endif
     let s:dir = g:plugs[a:name].dir
-    if s:dir =~ ".*/"
+    if s:dir =~ ".*/" || s:dir =~ '.*\\'
         let s:dir = strpart(s:dir, 0, strlen(s:dir) - 1)
     endif
     return isdirectory(s:dir)
