@@ -64,14 +64,10 @@ function! s:GuiControls()
 endfunction
 
 function s:FindFileRTP(filename)
-    let s:dir = ''
-    let s:found = ''
-    for s:dir in split(&rtp, ',')
-        if filereadable(s:dir . a:filename)
-            let s:found = s:dir . a:filename
-            break
-        endif
-    endfor
+    let s:found = findfile(a:filename, substitute(&rtp, ',', '/**0,', ''))
+    if len(s:found) > 0
+        let s:found = fnamemodify(s:found, ':p')
+    endif
     return s:found
 endfunction
 
@@ -153,7 +149,13 @@ function! s:PluginsConfig()
         endif
     endif
     if s:PlugLoaded('coc.nvim')
-        runtime! coc-cfg.vim
+        let s:coc_config = findfile('coc-example-config.vim',
+                    \ g:plugs['coc.nvim'].dir . '/**')
+        if len(s:coc_config) > 0
+            execute 'source ' . s:coc_config
+        else
+            runtime! coc-cfg.vim
+        endif
         if exists("&tagfunc")
             autocmd FileType c,cpp,vim set tagfunc=CocTagFunc
         endif
