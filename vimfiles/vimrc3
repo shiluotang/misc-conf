@@ -47,7 +47,12 @@ function! s:CommonControls()
 endfunction
 
 function! s:IsFontInstalled(fontname)
-    return len(split(system("fc-list | grep '" . a:fontname . "'"), '\n')) > 0
+    if has("linux") || has("bsd")
+        return len(split(system("fc-list | grep '" . a:fontname . "'"), '\n')) > 0
+    elseif has("windows") || has("win32")
+        return len(split(system("dir /b %windir%\\fonts | findstr /i \"" . a:fontname . "\""), '\n')) > 0
+    endif
+    return 0
 endfunction
 
 function! s:GuiControls()
@@ -59,7 +64,24 @@ function! s:GuiControls()
         if ! s:IsFontInstalled(s:fontname)
             let s:fontname="Monospace"
         endif
-        execute "set guifont=" . substitute(s:fontname . " " . s:fontsize, " ", '\\ ', "g")
+        execute "set guifont="
+                    \ . substitute(s:fontname . " " . s:fontsize
+                            \ , " "
+                            \ , "\\ "
+                            \ , "g")
+    elseif has("windows") || has("win32")
+        let s:fontname = "Jet Brains Mono Nerd Font"
+        let s:fontsize = 12
+        if ! s:IsFontInstalled(s:fontname)
+            let s:fontname = "Courier_New"
+        else
+            let s:fontname = "JetBrainsMono_NFM"
+        endif
+        execute "set guifont="
+                    \ . s:fontname
+                    \ . ":h" . s:fontsize
+                    \ . ":cANSI"
+                    \ . ":qDRAFT"
     endif
 endfunction
 
@@ -186,11 +208,11 @@ if has("gui_running")
     call s:SourceIfExists("$VIMRUNTIME/gvimrc_example.vim")
     call s:GuiControls()
 else
-    colorscheme industry
     augroup GUIEnter *
         call s:SourceIfExists("$VIMRUNTIME/gvimrc_example.vim")
         call s:GuiControls()
     augroup END
+    colorscheme industry
 endif
 call s:PluginsInit()
 call s:PluginsConfig()
