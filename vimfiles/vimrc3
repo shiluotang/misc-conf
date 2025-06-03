@@ -50,7 +50,16 @@ function! s:IsFontInstalled(fontname)
     if has("linux") || has("bsd")
         return len(split(system("fc-list | grep '" . a:fontname . "'"), '\n')) > 0
     elseif has("windows") || has("win32")
-        return len(split(system("dir /b %windir%\\fonts | findstr /i \"" . a:fontname . "\""), '\n')) > 0
+        return len(split(system("dir /b %windir%\\fonts | findstr /i /c:\"" . a:fontname . "\""), '\n')) > 0
+    endif
+    return 0
+endfunction
+
+function! s:IsNerdFontUsed()
+    if &guifont =~ " NFM"
+                \ || &guifont =~ "_NFM"
+                \ || &guifont =~ "Nerd Font"
+        return 1
     endif
     return 0
 endfunction
@@ -70,7 +79,7 @@ function! s:GuiControls()
                             \ , "\\ "
                             \ , "g")
     elseif has("windows") || has("win32")
-        let s:fontname = "Jet Brains Mono Nerd Font"
+        let s:fontname = "JetBrains Mono Regular Nerd Font"
         let s:fontsize = 12
         if ! s:IsFontInstalled(s:fontname)
             let s:fontname = "Courier_New"
@@ -119,7 +128,7 @@ function! s:PluginsInit()
     Plug 'flazz/vim-colorschemes'
     " Always load the vim-devicons as the very last one to make it fully
     " functional
-    if s:IsFontInstalled("JetBrainsMono")
+    if s:IsNerdFontUsed()
         Plug 'ryanoasis/vim-devicons'
     endif
     call plug#end()
@@ -163,7 +172,7 @@ function! s:PluginsConfig()
         nnoremap <Leader>nf :NERDTreeFind<CR>
     endif
     if s:PlugLoaded("nerdtree-git-plugin")
-        if s:IsFontInstalled("JetBrainsMono")
+        if s:IsNerdFontUsed()
             let g:NERDTreeGitStatusUseNerdFonts = 1
         endif
         if ! s:PlugLoaded("vim-devicons")
@@ -187,7 +196,7 @@ function! s:PluginsConfig()
         nmap <Leader>t :TagbarToggle<CR>
     endif
     if s:PlugLoaded('vim-airline')
-        if s:IsFontInstalled("JetBrainsMono")
+        if s:IsNerdFontUsed()
             let g:airline_powerline_fonts = 1
             call s:FixAirlineSymbol()
         endif
