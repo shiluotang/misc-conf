@@ -46,11 +46,39 @@ function! s:CommonControls()
     let g:netrw_ftp_cmd = "ftp -a"
 endfunction
 
+function! s:IsFontInstalledOnLinux(fontname)
+    let s:cmd = "fc-list | grep '" . a:fontname . "'"
+    return len(split(system(s:cmd), '\n')) > 0
+endfunction
+
+function! s:IsFontInstalledOnWindows(fontname)
+    let s:envdirs = [
+                \ "$localappdata\\microsoft\\windows\\fonts",
+                \ "$windir\\fonts"
+                \ ]
+    let s:envdir = ""
+    for s:envdir in s:envdirs
+        if expand(s:envdir) != s:envdir
+            let s:envdir = substitute(
+                        \ substitute(s:envdir, '\$', '%', ''),
+                        \ '\',
+                        \ '%\',
+                        \ '')
+            let s:cmd = "dir /b " . s:envdir
+                        \ . " | findstr /i /c:\"" . a:fontname . "\""
+            if len(split(system(s:cmd), '\n')) > 0
+                return 1
+            endif
+        endif
+    endfor
+    return 0
+endfunction
+
 function! s:IsFontInstalled(fontname)
     if has("linux") || has("bsd")
-        return len(split(system("fc-list | grep '" . a:fontname . "'"), '\n')) > 0
+        return s:IsFontInstalledOnLinux(a:fontname)
     elseif has("windows") || has("win32")
-        return len(split(system("dir /b %windir%\\fonts | findstr /i /c:\"" . a:fontname . "\""), '\n')) > 0
+        return s:IsFontInstalledOnWindows(a:fontname)
     endif
     return 0
 endfunction
@@ -71,7 +99,7 @@ function! s:GuiControls()
         let s:fontname = "JetBrainsMono NFM"
         let s:fontsize = 11
         " use nerdfont unless it's not found
-        if ! s:IsFontInstalled(s:fontname)
+        if ! s:IsFontInstalledOnLinux(s:fontname)
             let s:fontname="Monospace"
         endif
         execute "set guifont="
@@ -82,7 +110,8 @@ function! s:GuiControls()
     elseif has("windows") || has("win32")
         let s:fontname = "JetBrains Mono Regular Nerd Font"
         let s:fontsize = 12
-        if ! s:IsFontInstalled(s:fontname)
+        if ! s:IsFontInstalledOnWindows(s:fontname)
+                    \ && ! s:IsFontInstalledOnWindows("JetBrainsMono")
             let s:fontname = "Courier_New"
         else
             let s:fontname = "JetBrainsMono_NFM"
@@ -200,6 +229,12 @@ function! s:PluginsConfig()
         if s:IsNerdFontUsed()
             let g:airline_powerline_fonts = 1
             call s:FixAirlineSymbol()
+        endif
+    endif
+    if s:PlugLoaded('fzf.vim')
+        if has("windows") || has("win32")
+            " prevent broken fzf popup window
+            let g:fzf_layout = {'down': '70%'}
         endif
     endif
     if s:PlugLoaded('vim-devicons')
