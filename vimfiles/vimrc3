@@ -156,6 +156,10 @@ function! s:PluginsInit()
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
     Plug 'flazz/vim-colorschemes'
+    Plug 'iamcco/markdown-preview.nvim', {
+                \ 'do': ':call mkdp#util#install()',
+                \ 'for': ['markdown', 'vim-plug']
+                \ }
     " Always load the vim-devicons as the very last one to make it fully
     " functional
     if s:IsNerdFontUsed()
@@ -236,6 +240,16 @@ function! s:PluginsConfig()
             " prevent broken fzf popup window
             let g:fzf_layout = {'down': '70%'}
         endif
+    endif
+    " markdown-preview.nvim is not in runtimepath,
+    " unless editing a markdown file
+    if s:PlugInstalled('markdown-preview.nvim')
+        let g:mkdp_preview_options = {
+                    \   'uml': {
+                    \       'server': 'http://localhost:7000/svg',
+                    \       'imageFormat': 'svg'
+                    \   }
+                    \ }
     endif
     if s:PlugLoaded('vim-devicons')
         if has('gui_running')
