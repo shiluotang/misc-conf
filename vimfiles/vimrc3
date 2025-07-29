@@ -257,6 +257,29 @@ function! s:PluginsConfig()
         endif
         let g:DevIconsEnableFoldersOpenClose = 1
         let g:WebDevIconsUnicodeByteOrderMarkerDefaultSymbol = ''
+        " nerdfont since 3.0 some codepoints are changed to different plane.
+        let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols = {}
+        let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['node_modules'] = "\Ue5fa"
+        let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['.git'] = "\Ue65d"
+        let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['.github'] = "\Ue5fd"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols = {}
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['vue'] = "\Uf0844"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['ttf'] = "\Ue659"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['otf'] = "\Ue659"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['svg'] = "\Uf0721"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['cmake'] = "\Ue794"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['log'] = "\Uf4ed"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['r'] = "\Ue881"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['vim'] = "\Ue7c5"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['mk'] = "\Ue673"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['make'] = "\Ue673"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['cjs'] = "\Ued0d"
+        let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols = {}
+        let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols['cmakelists\.txt'] = "\Ue794"
+        let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols['^makefile$'] = "\Ue673"
+        let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols['^makefile2$'] = "\Ue673"
+        let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols['^makefile\..*$'] = "\Ue673"
+        let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols['.*\.js\.map$'] = "\Uf2ef"
     endif
     runtime! ftplugin/man.vim
 endfunction
