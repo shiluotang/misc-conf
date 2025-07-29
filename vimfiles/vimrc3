@@ -59,6 +59,9 @@ function! s:IsFontInstalledOnWindows(fontname)
     let s:envdir = ""
     for s:envdir in s:envdirs
         if expand(s:envdir) != s:envdir
+            if ! isdirectory(expand(s:envdir))
+                continue
+            endif
             let s:envdir = substitute(
                         \ substitute(s:envdir, '\$', '%', ''),
                         \ '\',
@@ -274,6 +277,21 @@ function! s:PluginsConfig()
         let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['mk'] = "\Ue673"
         let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['make'] = "\Ue673"
         let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['cjs'] = "\Ued0d"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['xml'] = "\Uf05c0"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['bat'] = "\Uebc4"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['lib'] = "\Ueb9c"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['dll'] = "\Uf085"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['reg'] = "\Uf1b3"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['cs'] = "\Ue7b2"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['resx'] = "\Ueaf0"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['config'] = "\Ue615"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['zip'] = "\Ueaef"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['sdf'] = "\Uf164b"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['avi'] = "\Uead9"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['vcxproj'] = "\Uf0a1e"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['vcproj'] = "\Uf0a1e"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['odl'] = "\Ueb61"
+        let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['idl'] = "\Ueb61"
         let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols = {}
         let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols['cmakelists\.txt'] = "\Ue794"
         let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols['^makefile$'] = "\Ue673"
